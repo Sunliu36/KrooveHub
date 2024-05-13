@@ -4,7 +4,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Grid from "@mui/material/Grid";
 
-export function SignUp() {
+export function WhereToDance() {
   const cities = [
     "台北市",
     "台中市",
@@ -45,7 +45,7 @@ export function SignUp() {
                   .map((city) => (
                     <FormControlLabel
                       key={city}
-                      control={<Checkbox />}
+                      control={<Checkbox sx={{ color: "white" }} />}
                       label={city}
                     />
                   ))}
@@ -58,7 +58,7 @@ export function SignUp() {
                   .map((city) => (
                     <FormControlLabel
                       key={city}
-                      control={<Checkbox />}
+                      control={<Checkbox sx={{ color: "white" }} />}
                       label={city}
                     />
                   ))}
@@ -75,12 +75,9 @@ export function SignUp() {
             取消
           </Button>
         </div>
-        <div className="flex items-center justify-center w-full gap-2">
-          <FormControlLabel control={<Checkbox />} label="設為預設" />
-        </div>
       </div>
     </main>
   );
 }
 
-export default SignUp;
+export default WhereToDance;

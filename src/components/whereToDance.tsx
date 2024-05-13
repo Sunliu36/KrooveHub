@@ -4,7 +4,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Grid from "@mui/material/Grid";
 
-export function SignUp() {
+export function WhereToDance() {
   const cities = [
     "台北市",
     "台中市",
@@ -83,4 +83,4 @@ export function SignUp() {
   );
 }
 
-export default SignUp;
+export default WhereToDance;

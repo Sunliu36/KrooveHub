@@ -1,86 +1,92 @@
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import Grid from "@mui/material/Grid";
+"use client";
 
-export function SignUp() {
-  const cities = [
-    "台北市",
-    "台中市",
-    "高雄市",
-    "台南市",
-    "新竹市",
-    "桃園市",
-    "基隆市",
-    "嘉義市",
-    "屏東縣",
-    "宜蘭縣",
-    "花蓮縣",
-    "台東縣",
-    "苗栗縣",
-    "南投縣",
-    "彰化縣",
-    "雲林縣",
-    "澎湖縣",
-    "金門縣",
-    "連江縣",
-  ];
+import { useState } from "react";
 
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-10">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex ">
-        <h1 className="text-3xl font-bold mb-2">
-          Where <br /> to Dance
-        </h1>
-        <p className="text-center">
-          Choose the place that suits you best and start dancing today.
-        </p>
-        <div className="flex items-center justify-center w-full mt-3 mb-3 gap-2">
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <FormGroup>
-                {cities
-                  .slice(0, cities.length / 2 + (cities.length % 2))
-                  .map((city) => (
-                    <FormControlLabel
-                      key={city}
-                      control={<Checkbox />}
-                      label={city}
-                    />
-                  ))}
-              </FormGroup>
-            </Grid>
-            <Grid item xs={6}>
-              <FormGroup>
-                {cities
-                  .slice(cities.length / 2 + (cities.length % 2))
-                  .map((city) => (
-                    <FormControlLabel
-                      key={city}
-                      control={<Checkbox />}
-                      label={city}
-                    />
-                  ))}
-              </FormGroup>
-            </Grid>
-          </Grid>
-        </div>
+import { Box, Button, Typography } from "@mui/material";
 
-        <div className="flex items-center justify-center w-full gap-2">
-          <Button variant="contained" color="primary" href="/signup">
-            送出
-          </Button>
-          <Button variant="contained" color="primary" href="/">
-            取消
-          </Button>
-        </div>
-        <div className="flex items-center justify-center w-full gap-2">
-          <FormControlLabel control={<Checkbox />} label="設為預設" />
-        </div>
-      </div>
-    </main>
-  );
+interface TimeSlot {
+  day: string;
+  hour: number;
 }
 
-export default SignUp;
+const WhenToDance = () => {
+  const days = ["日", "一", "二", "三", "四", "五", "六"];
+  const hours = Array.from({ length: 24 }, (_, i) => i + 1); // 1-24 hours
+  const [selectedTimes, setSelectedTimes] = useState<TimeSlot[]>([]);
+
+  const toggleTimeSlot = (day: string, hour: number) => {
+    const index = selectedTimes.findIndex(
+      (slot) => slot.day === day && slot.hour === hour,
+    );
+    if (index >= 0) {
+      setSelectedTimes((current) => current.filter((_, i) => i !== index));
+    } else {
+      setSelectedTimes((current) => [...current, { day, hour }]);
+    }
+  };
+
+  return (
+    <Box
+      sx={{
+        maxWidth: 920,
+        mx: "auto",
+        my: 4,
+        display: "grid",
+        gridTemplateColumns: "60px repeat(7, 1fr)",
+      }}
+    >
+      <Box
+        key={"day"}
+        sx={{ maxWidth: 30, textAlign: "center", borderBottom: "solid #ccc" }}
+      >
+        <Typography variant="h6">day</Typography>
+        {hours.map((hour) => (
+          <Button
+            key={hour}
+            sx={{
+              height: 20,
+              minWidth: 30,
+              padding: 0,
+              color: "white",
+            }}
+          >
+            {hour}
+          </Button>
+        ))}
+      </Box>
+      {days.map((day) => (
+        <Box
+          key={day}
+          sx={{ maxWidth: 30, textAlign: "center", borderBottom: "solid #ccc" }}
+        >
+          <Typography variant="h6">{day}</Typography>
+          {hours.map((hour) => (
+            <Button
+              key={`${day}-${hour}`}
+              sx={{
+                height: 20,
+                minWidth: 30,
+                padding: 0,
+                backgroundColor: selectedTimes.some(
+                  (slot) => slot.day === day && slot.hour === hour,
+                )
+                  ? "lightgreen"
+                  : "lightgray",
+                "&:hover": {
+                  backgroundColor: selectedTimes.some(
+                    (slot) => slot.day === day && slot.hour === hour,
+                  )
+                    ? "green"
+                    : "gray",
+                },
+              }}
+              onClick={() => toggleTimeSlot(day, hour)}
+            />
+          ))}
+        </Box>
+      ))}
+    </Box>
+  );
+};
+
+export default WhenToDance;
