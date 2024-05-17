@@ -1,4 +1,3 @@
-// File: pages/about.js
 import React from "react";
 
 import Image from "next/image";
@@ -13,6 +12,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+
+import Footer from "@/components/footer";
 
 const aboutInfos = [
   {
@@ -31,6 +32,7 @@ const aboutInfos = [
       "Our user-friendly interface ensures you can easily find classes, studios, and connections.",
   },
 ];
+
 const FindYourGroove = [
   {
     title: "Locate Classes",
@@ -48,14 +50,19 @@ const FindYourGroove = [
       "Build connections with other dancers, collaborate on projects, and support each other's growth.",
   },
 ];
+
 export default function About() {
   return (
     <div
       style={{
         background: "linear-gradient(to right, #2C5364, #203A43, #0F2027)",
+        minHeight: "100vh", // Ensure the page takes up the full viewport height
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth="md" sx={{ flex: "1 0 auto" }}>
         <Typography
           variant="h2"
           component="h1"
@@ -70,7 +77,7 @@ export default function About() {
           About GrooveHub
         </Typography>
         <Image
-          src="favicon.png"
+          src="/favicon.png"
           className="rounded-circle justify-center mx-auto mb-4"
           width={200}
           height={200}
@@ -169,6 +176,7 @@ export default function About() {
           </Typography>
         </Box>
       </Container>
+      <Footer />
     </div>
   );
 }

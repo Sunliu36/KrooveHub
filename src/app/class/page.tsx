@@ -116,29 +116,33 @@ export default function ImagesList() {
             <Link key={item.img} href={`/class/${item.eventId}`}>
               <ImageListItem>
                 <div className="group rounded-3xl overflow-hidden relative">
-                  <Image
-                    width={300}
-                    height={300}
-                    src={item.img}
-                    alt={item.title}
-                    loading="lazy"
-                    className="rounded-3xl p-0"
-                  />
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      bottom: 0,
-                      left: 0,
-                      width: "100%",
-                      backgroundColor: "rgba(0, 0, 0, 0.5)",
-                      color: "white",
-                      padding: "8px",
-                    }}
+                  <div
+                    style={{ width: 300, height: 160, position: "relative" }}
                   >
-                    <Typography variant="subtitle1">
-                      {item.title} x {item.author}
-                    </Typography>
-                  </Box>
+                    <Image
+                      width={300}
+                      height={160}
+                      src={item.img}
+                      alt={item.title}
+                      loading="lazy"
+                      className="rounded-3xl p-0"
+                    />
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        width: "100%",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        color: "white",
+                        padding: "8px",
+                      }}
+                    >
+                      <Typography variant="subtitle1">
+                        {item.title} x {item.author}
+                      </Typography>
+                    </Box>
+                  </div>
                 </div>
                 <ImageListItemBar
                   title={item.title}

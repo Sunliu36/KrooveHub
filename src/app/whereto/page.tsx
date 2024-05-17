@@ -12,9 +12,12 @@ const Home: NextPage = () => {
         <p className="text-center">
           Choose the place that suits you best and start dancing today.
         </p>
+      </div>
+      <div className="flex flex-col items-center justify-center mb-auto">
         <WhereToDance />
       </div>
     </main>
   );
 };
+
 export default Home;
