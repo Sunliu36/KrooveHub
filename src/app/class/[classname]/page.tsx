@@ -1,32 +1,43 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import Image from "next/image";
 import { useParams } from "next/navigation";
 
 import WhenToMeet from "./whentomeet";
 
+interface Event {
+  img: string;
+  title: string;
+  description: string;
+}
+
 function EventsIdPage() {
   const params = useParams();
-  console.log(params);
   const name = params.classname?.toString();
-  const dbEvent = {
-    id: 1,
-    displayId: "21",
-    description: "description",
-  };
+  const [dbEvent, setDbEvent] = useState<Event>({
+    img: "",
+    title: "",
+    description: "",
+  });
+  useEffect(() => {
+    fetch(`/api/class/${name}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (data) setDbEvent(data);
+      })
+      .catch((error) => console.error("Failed to load class data", error));
+  }, [name]);
 
   return (
     <div className="flex min-h-screen flex-col items-center text-dimWhite">
       <div className="flex flex-col items-center justify-center w-full gap-3">
-        <h1 className="text-4xl font-bold text-center">{name}</h1>
-        <Image
-          src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e"
-          alt="GrooveHub Logo"
-          width={200}
-          height={200}
-        />
+        <h1 className="text-4xl font-bold text-center">{dbEvent.title}</h1>
+        <Image src={dbEvent.img} alt={dbEvent.title} width={300} height={300} />
         <p className="text-center">{dbEvent.description}</p>
-        <WhenToMeet classname={name} />
+        <WhenToMeet classname={dbEvent.title} />
       </div>
     </div>
   );

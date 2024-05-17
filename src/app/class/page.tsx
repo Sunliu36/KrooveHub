@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -22,7 +22,18 @@ import {
   TextField,
 } from "@mui/material";
 
+interface ClassType {
+  title: string;
+  author: string;
+  img: string;
+  stage: string;
+  people: number;
+  isOngoing: boolean;
+  eventId: string;
+}
+
 export default function ImagesList() {
+  const [itemData, setItemData] = useState<ClassType[]>([]); // Assuming you have an array of items [item1, item2, ...
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     // Assuming what data you might need, e.g., class name, time, etc.
@@ -53,6 +64,19 @@ export default function ImagesList() {
     setOpen(false);
   };
   const [eventStatus, setEventStatus] = useState("ongoing"); // 'ongoing' or 'finished'
+  useEffect(() => {
+    // Fetch data from API
+    // setItemData(data);
+    fetch("/api/class")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (data.length > 0) setItemData(data);
+      })
+      .catch((error) => {
+        console.error("Failed to load class data", error);
+      });
+  }, []);
   return (
     <div className="justify-center items-center flex flex-col mt-4 w-full">
       <div className="flex gap-4 mb-4">
@@ -67,7 +91,7 @@ export default function ImagesList() {
             color: "white",
           }}
         >
-          已成功開設課程
+          表演列表
         </Button>
         <Button
           variant="outlined"
@@ -80,7 +104,7 @@ export default function ImagesList() {
             color: "white",
           }}
         >
-          您開設的課程
+          您開設的表演
         </Button>
       </div>
       <ImageList variant="masonry" cols={getCols()} gap={10}>
@@ -89,7 +113,7 @@ export default function ImagesList() {
             eventStatus === "ongoing" ? item.isOngoing : !item.isOngoing,
           )
           .map((item) => (
-            <Link key={item.img} href={`/class/${item.title}`}>
+            <Link key={item.img} href={`/class/${item.eventId}`}>
               <ImageListItem>
                 <div className="group rounded-3xl overflow-hidden relative">
                   <Image
@@ -126,14 +150,29 @@ export default function ImagesList() {
                   actionIcon={
                     <>
                       <Chip
-                        label="Intermediate"
-                        color="primary" // Optional: Adjust color based on your theme
+                        label={item.stage}
+                        sx={
+                          item.stage === "easy"
+                            ? {
+                                backgroundColor: "green",
+                                color: "white",
+                              }
+                            : item.stage === "intermediate"
+                              ? {
+                                  backgroundColor: "yellow",
+                                  color: "black",
+                                }
+                              : {
+                                  backgroundColor: "red",
+                                  color: "white",
+                                }
+                        }
                         size="small" // Optional: Adjust size based on your preferences
                         className="mr-2 mt-4"
                       />
                       <Chip
-                        label="40min"
-                        color="secondary" // Optional: Adjust color based on your theme
+                        label={`${item.people} people`}
+                        color="primary" // Optional: Adjust color based on your theme
                         size="small" // Optional: Adjust size based on your preferences
                         className="mr-2 mt-4"
                       />
@@ -195,30 +234,3 @@ export default function ImagesList() {
     </div>
   );
 }
-
-const itemData = [
-  {
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    title: "Breakfast",
-    author: "@bkristastucchio",
-    isOngoing: true,
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-    title: "Burger",
-    author: "@rollelflex",
-    isOngoing: true,
-  },
-  {
-    img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-    title: "Camera",
-    author: "@helloimnik",
-    isOngoing: false,
-  },
-  {
-    img: "https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c",
-    title: "Coffee",
-    author: "@nolanissac",
-    isOngoing: true,
-  },
-];

@@ -1,65 +1,130 @@
-// WhenToMeet.tsx
 import React, { useState, useEffect } from "react";
 
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  CircularProgress,
-  Button,
-} from "@mui/material";
-
-interface TimeSlot {
-  [time: string]: number; // Number of available people
-}
+import { Typography, CircularProgress, Button, Box, Grid } from "@mui/material";
 
 interface AvailabilityType {
-  [day: string]: TimeSlot;
+  [dayIndex: number]: {
+    [hourIndex: number]: number;
+  };
 }
 
-const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const times = [
-  "9:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-  "18:00",
-  "19:00",
-  "20:00",
-  "21:00",
-  "22:00",
-];
+interface TimeSlot {
+  dayIndex: number;
+  hourIndex: number;
+}
+
+const indexToDay = ["日", "一", "二", "三", "四", "五", "六"];
+const numPeople = [0, 5, 10, 15, 20, 25, 30, 35];
+
+const hours = Array.from({ length: 15 }, (_, i) => i + 8); // 8-22 hours
 
 interface WhenToMeetProps {
   classname: string;
 }
 
 const WhenToMeet: React.FC<WhenToMeetProps> = ({ classname }) => {
-  const [availability, setAvailability] = useState<AvailabilityType>({});
+  const [selectedTimes, setSelectedTimes] = useState<TimeSlot[]>([]);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [startSlot, setStartSlot] = useState<TimeSlot | null>(null);
   const [showNumber, setShowNumber] = useState<boolean>(false);
+  const [isUnselecting, setIsUnselecting] = useState(false);
+  const [availability, setAvailability] = useState<AvailabilityType>({});
   const [loading, setLoading] = useState<boolean>(true);
-  const handleSlotClick = (day: string, time: string) => {
-    const newAvailability = { ...availability };
-    const currentCount = newAvailability[day][time] || 0;
-    newAvailability[day][time] = currentCount + 1; // Increment on click
-    setAvailability(newAvailability);
+
+  const isSlotSelected = (dayIndex: number, hourIndex: number) => {
+    if (!selectedTimes) {
+      return false;
+    }
+    return selectedTimes.some(
+      (slot) => slot.dayIndex === dayIndex && slot.hourIndex === hourIndex,
+    );
   };
+
+  const handleMouseDown = (dayIndex: number, hourIndex: number) => {
+    const selected = isSlotSelected(dayIndex, hourIndex);
+    setIsSelecting(true);
+    setIsUnselecting(selected);
+    setStartSlot({ dayIndex, hourIndex });
+
+    if (selected) {
+      setSelectedTimes((current) =>
+        current?.filter(
+          (slot) =>
+            !(slot.dayIndex === dayIndex && slot.hourIndex === hourIndex),
+        ),
+      );
+    } else {
+      setSelectedTimes((current) => [
+        ...(current || []),
+        { dayIndex, hourIndex },
+      ]);
+    }
+  };
+
+  const handleMouseEnter = (dayIndex: number, hourIndex: number) => {
+    if (isSelecting && startSlot) {
+      const dayStartIndex = startSlot.dayIndex;
+      const dayEndIndex = dayIndex;
+      const hourStartIndex = startSlot.hourIndex;
+      const hourEndIndex = hourIndex;
+
+      const newSelectedTimes: TimeSlot[] = [];
+
+      for (
+        let d = Math.min(dayStartIndex, dayEndIndex);
+        d <= Math.max(dayStartIndex, dayEndIndex);
+        d++
+      ) {
+        for (
+          let h = Math.min(hourStartIndex, hourEndIndex);
+          h <= Math.max(hourStartIndex, hourEndIndex);
+          h++
+        ) {
+          const slot: TimeSlot = { dayIndex: d, hourIndex: h };
+          newSelectedTimes.push(slot);
+        }
+      }
+
+      if (isUnselecting) {
+        setSelectedTimes((current) =>
+          current?.filter(
+            (slot) =>
+              !newSelectedTimes.some(
+                (newSlot) =>
+                  newSlot.dayIndex === slot.dayIndex &&
+                  newSlot.hourIndex === slot.hourIndex,
+              ),
+          ),
+        );
+      } else {
+        setSelectedTimes((current) => [
+          ...current.filter(
+            (slot) =>
+              !newSelectedTimes.some(
+                (newSlot) =>
+                  newSlot.dayIndex === slot.dayIndex &&
+                  newSlot.hourIndex === slot.hourIndex,
+              ),
+          ),
+          ...newSelectedTimes,
+        ]);
+      }
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsSelecting(false);
+    setStartSlot(null);
+    setIsUnselecting(false);
+  };
+
   useEffect(() => {
     fetch(`/api/${classname}/availability`)
       .then((res) => res.json())
       .then((data: AvailabilityType) => {
-        console.log(data);
-        setAvailability(data);
+        if (data) {
+          setAvailability(data);
+        }
         setLoading(false);
       })
       .catch((error) => {
@@ -71,26 +136,34 @@ const WhenToMeet: React.FC<WhenToMeetProps> = ({ classname }) => {
   const getColor = (count: number): string => {
     switch (count) {
       case 0:
-        return "#ffccbc"; // Red for no availability
+        return "#808080"; // Gray for no availability
       case 1:
-        return "#ffe0b2"; // Orange for very low availability
+        return "#ccffcc"; // Very Light Green for very low availability
       case 2:
-        return "#fff9c4"; // Yellow for low availability
+        return "#99ff99"; // Light Green for low availability
       case 3:
-        return "#b2ebf2"; // Light blue for lower medium availability
+        return "#66ff66"; // Pastel Green for lower medium availability
       case 4:
-        return "#80deea"; // Cyan for medium availability
+        return "#33cc33"; // Lime Green for medium availability
       case 5:
-        return "#80cbc4"; // Teal for higher medium availability
+        return "#29a329"; // Medium Green for higher medium availability
       case 6:
-        return "#a5d6a7"; // Light green for good availability
+        return "#248f24"; // Sea Green for good availability
       case 7:
-        return "#c5e1a5"; // Green for high availability
+        return "#1f7a1f"; // Forest Green for high availability
       case 8:
-        return "#aed581"; // Lime green for higher availability
+        return "#145214"; // Dark Green for higher availability
       default:
-        return "#9ccc65"; // Strong green for excellent availability
+        return "#0d3c0d"; // Very Dark Green for excellent availability
     }
+  };
+  const getCount = (count: number) => {
+    for (let i = 0; i < numPeople.length; i++) {
+      if (count <= numPeople[i]) {
+        return i;
+      }
+    }
+    return numPeople.length - 1;
   };
 
   if (loading) {
@@ -101,61 +174,168 @@ const WhenToMeet: React.FC<WhenToMeetProps> = ({ classname }) => {
     setShowNumber(!showNumber);
   };
 
+  const saveWhenToDance = (selectedTimes: TimeSlot[]) => {
+    console.log(selectedTimes);
+    fetch(`/api/${classname}/whenToDance`, {
+      method: "POST",
+      body: JSON.stringify(selectedTimes),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Failed to save availability", error);
+      });
+  };
+
+  const cancelWhenToDance = () => {
+    setSelectedTimes([]);
+  };
+
   return (
     <>
-      <Button variant="contained" onClick={setShowNumberHandler}>
-        {showNumber ? "Hide" : "Show"}{" "}
+      <Box
+        sx={{ maxWidth: 920, mx: "auto", my: 4, padding: 0, marginBottom: 0 }}
+      >
+        <Typography variant="h6">Availability Legend</Typography>
+        <Grid container spacing={1}>
+          {numPeople.map((count, index) => (
+            <Grid item key={count}>
+              <Box
+                sx={{
+                  width: 25,
+                  height: 25,
+                  gap: 0,
+                  padding: 0,
+                  marginBottom: 0,
+                  backgroundColor: getColor(index),
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "1px solid #ccc",
+                }}
+              >
+                {count}
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+      <Button
+        variant="contained"
+        sx={{ color: "white", backgroundColor: "#0077cc" }}
+        onClick={setShowNumberHandler}
+      >
+        {showNumber ? "隱藏" : "顯示"}
       </Button>
-      <TableContainer component={Paper} elevation={3} sx={{ maxWidth: 850 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ padding: "2px" }}></TableCell>
-              {days.map((day) => (
-                <TableCell
-                  key={day}
-                  align="center"
-                  sx={{ padding: { xs: "4px", sm: "8px" }, fontWeight: "bold" }}
-                >
-                  {day}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {times.map((time, index) => (
-              <TableRow key={time}>
-                <TableCell
-                  component="th"
-                  scope="row"
-                  sx={{
-                    padding: { xs: "2px", sm: "4px" },
-                    fontWeight: "bold",
-                    justify: "center",
-                  }}
-                >
-                  {time}
-                </TableCell>
-                {days.map((day) => (
-                  <TableCell
-                    key={day}
-                    align="center"
-                    sx={{
-                      bgcolor: getColor(availability[day]?.[time] || 0),
-                      cursor: "pointer",
-                      fontSize: { xs: "0.75rem", sm: "1rem" },
-                    }}
-                    onClick={() => handleSlotClick(day, time)}
-                  >
-                    {showNumber ? availability[day]?.[time] || 0 : ""}
-                  </TableCell>
-                ))}
-              </TableRow>
+      <Box
+        sx={{
+          maxWidth: 920,
+          mx: "auto",
+          gap: 0,
+          padding: 0,
+          marginBottom: 0,
+          display: "grid",
+          gridTemplateColumns: "60px repeat(7, 1fr)",
+        }}
+        onMouseUp={handleMouseUp}
+      >
+        <Box
+          key={"day"}
+          sx={{ maxWidth: 30, textAlign: "center", borderBottom: "solid #ccc" }}
+        >
+          <Typography variant="h6">Hour</Typography>
+          {hours.map((hour) => (
+            <Button
+              key={hour}
+              sx={{
+                height: 20,
+                minWidth: 45,
+                padding: 0,
+                marginBottom: 0.5,
+                border: "1px solid #ccc",
+                "&:disabled": {
+                  color: "black",
+                  backgroundColor: "white",
+                },
+              }}
+              disabled
+            >
+              {hour}:00
+            </Button>
+          ))}
+        </Box>
+        {indexToDay.map((day, dayIndex) => (
+          <Box
+            key={day}
+            sx={{
+              maxWidth: 35,
+              textAlign: "center",
+              borderBottom: "solid #ccc",
+            }}
+          >
+            <Typography variant="h6">{day}</Typography>
+            {hours.map((hourIndex) => (
+              <Button
+                key={`${dayIndex}-${hourIndex}`}
+                sx={{
+                  height: 20,
+                  minWidth: 30,
+                  padding: 0,
+                  marginBottom: 0.5,
+                  color: "black",
+                  border: isSlotSelected(dayIndex, hourIndex)
+                    ? "2px solid #00008b" // Added border for selected times
+                    : "0px solid", // Default border
+                  backgroundColor: isSlotSelected(dayIndex, hourIndex)
+                    ? getColor(
+                        getCount(availability[dayIndex]?.[hourIndex]) + 1 || 1,
+                      )
+                    : getColor(
+                        getCount(availability[dayIndex]?.[hourIndex]) || 0,
+                      ),
+                  "&:hover": {
+                    backgroundColor: isSlotSelected(dayIndex, hourIndex)
+                      ? getColor(
+                          getCount(availability[dayIndex]?.[hourIndex]) + 1 ||
+                            1,
+                        )
+                      : getColor(
+                          getCount(availability[dayIndex]?.[hourIndex]) || 0,
+                        ),
+                  },
+                }}
+                onMouseDown={() => handleMouseDown(dayIndex, hourIndex)}
+                onMouseEnter={() => handleMouseEnter(dayIndex, hourIndex)}
+              >
+                {showNumber &&
+                  (isSlotSelected(dayIndex, hourIndex)
+                    ? availability[dayIndex]?.[hourIndex] + 1
+                    : availability[dayIndex]?.[hourIndex])}
+              </Button>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </Box>
+        ))}
+      </Box>
+      <Box sx={{ textAlign: "center" }}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => saveWhenToDance(selectedTimes)}
+          sx={{ margin: 1 }}
+        >
+          儲存
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => cancelWhenToDance()}
+          sx={{ margin: 1 }}
+        >
+          取消
+        </Button>
+      </Box>
     </>
   );
 };
