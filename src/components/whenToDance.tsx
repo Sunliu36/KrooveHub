@@ -241,8 +241,6 @@ const WhenToDance = () => {
                       : "gray",
                   },
                 }}
-                onMouseDown={() => handleMouseDown(dayIndex, hour)}
-                onMouseEnter={() => handleMouseEnter(dayIndex, hour)}
                 onTouchStart={() => handleTouchStart(dayIndex, hour)}
               />
             ))}
