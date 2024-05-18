@@ -20,11 +20,6 @@ export default function ComingSoon() {
         }}
       >
         <VideoPlayer />
-        <Box mt={4}>
-          <Button variant="contained" color="primary" href="/">
-            Back
-          </Button>
-        </Box>
       </Container>
     </>
   );
