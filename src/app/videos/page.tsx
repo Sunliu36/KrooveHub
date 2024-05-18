@@ -2,6 +2,8 @@ import React from "react";
 
 import { Container, Typography, Box, Button } from "@mui/material";
 
+import VideoPlayer from "@/components/videoPlayer";
+
 export default function ComingSoon() {
   return (
     <>
@@ -17,25 +19,7 @@ export default function ComingSoon() {
           height: "80vh",
         }}
       >
-        <Typography
-          variant="h2"
-          component="h1"
-          gutterBottom
-          align="center"
-          sx={{ textTransform: "uppercase", fontWeight: "bold" }}
-          color="primary"
-        >
-          Coming Soon
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          sx={{ maxWidth: 400, color: "white" }}
-          paragraph
-        >
-          Video Page is under construction. We&apos;ll be here soon with our new
-          awesome site.
-        </Typography>
+        <VideoPlayer />
         <Box mt={4}>
           <Button variant="contained" color="primary" href="/">
             Back

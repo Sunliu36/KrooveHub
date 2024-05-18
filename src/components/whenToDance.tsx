@@ -15,7 +15,6 @@ const WhenToDance = () => {
   const [selectedTimes, setSelectedTimes] = useState<TimeSlot[]>([]);
   const [isSelecting, setIsSelecting] = useState(false);
   const [startSlot, setStartSlot] = useState<TimeSlot | null>(null);
-  const [isUnselecting, setIsUnselecting] = useState(false);
 
   const isSlotSelected = (dayIndex: number, hourIndex: number) => {
     if (!selectedTimes) {
@@ -26,95 +25,35 @@ const WhenToDance = () => {
     );
   };
 
-  useEffect(() => {
-    fetch("/api/user/when")
-      .then((res) => res.json())
-      .then((data: TimeSlot[]) => {
-        if (data.length > 0) {
-          setSelectedTimes(data);
-        }
-      })
-      .catch((error) => {
-        console.error("Failed to load availability", error);
-      });
-  }, []);
-
-  const handleMouseDown = (dayIndex: number, hourIndex: number) => {
+  const toggleSlot = (dayIndex: number, hourIndex: number) => {
     const selected = isSlotSelected(dayIndex, hourIndex);
-    setIsSelecting(true);
-    setIsUnselecting(selected);
-    setStartSlot({ dayIndex, hourIndex });
-
     if (selected) {
       setSelectedTimes((current) =>
-        current?.filter(
+        current.filter(
           (slot) =>
             !(slot.dayIndex === dayIndex && slot.hourIndex === hourIndex),
         ),
       );
     } else {
-      setSelectedTimes((current) => [
-        ...(current || []),
-        { dayIndex, hourIndex },
-      ]);
+      setSelectedTimes((current) => [...current, { dayIndex, hourIndex }]);
     }
+  };
+
+  const handleMouseDown = (dayIndex: number, hourIndex: number) => {
+    toggleSlot(dayIndex, hourIndex);
+    setIsSelecting(true);
+    setStartSlot({ dayIndex, hourIndex });
   };
 
   const handleMouseEnter = (dayIndex: number, hourIndex: number) => {
     if (isSelecting && startSlot) {
-      const dayStartIndex = startSlot.dayIndex;
-      const dayEndIndex = dayIndex;
-      const hourStartIndex = startSlot.hourIndex;
-      const hourEndIndex = hourIndex;
-
-      const newSelectedTimes: TimeSlot[] = [];
-
-      for (
-        let d = Math.min(dayStartIndex, dayEndIndex);
-        d <= Math.max(dayStartIndex, dayEndIndex);
-        d++
-      ) {
-        for (
-          let h = Math.min(hourStartIndex, hourEndIndex);
-          h <= Math.max(hourStartIndex, hourEndIndex);
-          h++
-        ) {
-          const slot: TimeSlot = { dayIndex: d, hourIndex: h };
-          newSelectedTimes.push(slot);
-        }
-      }
-
-      if (isUnselecting) {
-        setSelectedTimes((current) =>
-          current?.filter(
-            (slot) =>
-              !newSelectedTimes.some(
-                (newSlot) =>
-                  newSlot.dayIndex === slot.dayIndex &&
-                  newSlot.hourIndex === slot.hourIndex,
-              ),
-          ),
-        );
-      } else {
-        setSelectedTimes((current) => [
-          ...current.filter(
-            (slot) =>
-              !newSelectedTimes.some(
-                (newSlot) =>
-                  newSlot.dayIndex === slot.dayIndex &&
-                  newSlot.hourIndex === slot.hourIndex,
-              ),
-          ),
-          ...newSelectedTimes,
-        ]);
-      }
+      toggleSlot(dayIndex, hourIndex);
     }
   };
 
   const handleMouseUp = () => {
     setIsSelecting(false);
     setStartSlot(null);
-    setIsUnselecting(false);
   };
 
   const handleTouchStart = (dayIndex: number, hourIndex: number) => {
@@ -156,6 +95,19 @@ const WhenToDance = () => {
         console.error("Failed to save availability", error);
       });
   };
+
+  useEffect(() => {
+    fetch("/api/user/when")
+      .then((res) => res.json())
+      .then((data: TimeSlot[]) => {
+        if (data.length > 0) {
+          setSelectedTimes(data);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load availability", error);
+      });
+  }, []);
 
   const dismissChange = () => {
     fetch("/api/user/when")
@@ -241,6 +193,8 @@ const WhenToDance = () => {
                       : "gray",
                   },
                 }}
+                onMouseDown={() => handleMouseDown(dayIndex, hour)}
+                onMouseEnter={() => handleMouseEnter(dayIndex, hour)}
                 onTouchStart={() => handleTouchStart(dayIndex, hour)}
               />
             ))}

@@ -118,6 +118,29 @@ const WhenToMeet: React.FC<WhenToMeetProps> = ({ classname }) => {
     setIsUnselecting(false);
   };
 
+  const handleTouchStart = (dayIndex: number, hourIndex: number) => {
+    handleMouseDown(dayIndex, hourIndex);
+  };
+
+  const handleTouchMove = (event: React.TouchEvent) => {
+    const touch = event.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (
+      element &&
+      element instanceof HTMLElement &&
+      element.dataset.day &&
+      element.dataset.hour
+    ) {
+      const dayIndex = parseInt(element.dataset.day, 10);
+      const hourIndex = parseInt(element.dataset.hour, 10);
+      handleMouseEnter(dayIndex, hourIndex);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    handleMouseUp();
+  };
+
   useEffect(() => {
     fetch(`/api/${classname}/availability`)
       .then((res) => res.json())
@@ -306,8 +329,9 @@ const WhenToMeet: React.FC<WhenToMeetProps> = ({ classname }) => {
                         ),
                   },
                 }}
-                onMouseDown={() => handleMouseDown(dayIndex, hourIndex)}
                 onMouseEnter={() => handleMouseEnter(dayIndex, hourIndex)}
+                onMouseDown={() => handleMouseDown(dayIndex, hourIndex)}
+                onTouchStart={() => handleTouchStart(dayIndex, hourIndex)}
               >
                 {showNumber &&
                   (isSlotSelected(dayIndex, hourIndex)
