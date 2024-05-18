@@ -67,7 +67,6 @@ export default function About() {
           variant="h2"
           component="h1"
           align="center"
-          color="primary"
           sx={{
             fontWeight: "bold", // Make the text bold
             fontSize: "3rem", // Adjust the font size similarly to 'text-4xl'

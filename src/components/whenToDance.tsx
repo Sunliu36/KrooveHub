@@ -25,11 +25,11 @@ const WhenToDance = () => {
       (slot) => slot.dayIndex === dayIndex && slot.hourIndex === hourIndex,
     );
   };
+
   useEffect(() => {
     fetch("/api/user/when")
       .then((res) => res.json())
       .then((data: TimeSlot[]) => {
-        console.log(data);
         if (data.length > 0) {
           setSelectedTimes(data);
         }
@@ -117,8 +117,30 @@ const WhenToDance = () => {
     setIsUnselecting(false);
   };
 
+  const handleTouchStart = (dayIndex: number, hourIndex: number) => {
+    handleMouseDown(dayIndex, hourIndex);
+  };
+
+  const handleTouchMove = (event: React.TouchEvent) => {
+    const touch = event.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (
+      element &&
+      element instanceof HTMLElement &&
+      element.dataset.day &&
+      element.dataset.hour
+    ) {
+      const dayIndex = parseInt(element.dataset.day, 10);
+      const hourIndex = parseInt(element.dataset.hour, 10);
+      handleMouseEnter(dayIndex, hourIndex);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    handleMouseUp();
+  };
+
   const saveWhenToDance = (selectedTimes: TimeSlot[]) => {
-    console.log(selectedTimes);
     fetch("/api/user/when", {
       method: "POST",
       headers: {
@@ -139,7 +161,6 @@ const WhenToDance = () => {
     fetch("/api/user/when")
       .then((res) => res.json())
       .then((data: TimeSlot[]) => {
-        console.log(data);
         if (data.length > 0) {
           setSelectedTimes(data);
         }
@@ -160,6 +181,8 @@ const WhenToDance = () => {
           gridTemplateColumns: "60px repeat(7, 1fr)",
         }}
         onMouseUp={handleMouseUp}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
       >
         <Box
           key={"day"}
@@ -199,6 +222,8 @@ const WhenToDance = () => {
             {hours.map((hour) => (
               <Button
                 key={`${day}-${hour}`}
+                data-day={dayIndex}
+                data-hour={hour}
                 sx={{
                   height: 20,
                   minWidth: 30,
@@ -218,6 +243,7 @@ const WhenToDance = () => {
                 }}
                 onMouseDown={() => handleMouseDown(dayIndex, hour)}
                 onMouseEnter={() => handleMouseEnter(dayIndex, hour)}
+                onTouchStart={() => handleTouchStart(dayIndex, hour)}
               />
             ))}
           </Box>
