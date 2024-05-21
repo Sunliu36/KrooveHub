@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
+import CameraIcon from "@mui/icons-material/Camera";
 import FlipCameraAndroidIcon from "@mui/icons-material/FlipCameraAndroid";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import ZoomInIcon from "@mui/icons-material/ZoomIn";
-import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import SwitchVideoIcon from "@mui/icons-material/SwitchVideo";
 import {
   Box,
   MenuItem,
@@ -21,26 +21,20 @@ import { useGesture } from "@use-gesture/react";
 
 const VideoPlayer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const cameraRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [isMirrored, setIsMirrored] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-  const [scale, setScale] = useState<number>(1);
+  const [currentVideo, setCurrentVideo] = useState<string>("/sample-video.mp4");
+  const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
   const [style, api] = useSpring(() => ({
     scale: 1,
     x: 0,
     y: 0,
     scaleX: 1,
   }));
-
-  const disableScroll = () => {
-    document.body.classList.add("no-scroll");
-  };
-
-  const enableScroll = () => {
-    document.body.classList.remove("no-scroll");
-  };
 
   useGesture(
     {
@@ -51,7 +45,6 @@ const VideoPlayer = () => {
         offset: [s],
         memo,
       }) => {
-        disableScroll();
         if (first) {
           const { width, height, x, y } =
             videoRef.current!.getBoundingClientRect();
@@ -64,9 +57,6 @@ const VideoPlayer = () => {
         const y = memo[1] - (ms - 1) * memo[3];
         api.start({ scale: s, x, y });
         return memo;
-      },
-      onPinchEnd: () => {
-        enableScroll();
       },
       onDrag: ({ pinching, cancel, offset: [x, y] }) => {
         if (pinching) return cancel();
@@ -106,18 +96,6 @@ const VideoPlayer = () => {
     api.start({ scaleX: isMirrored ? 1 : -1 });
   };
 
-  const handleZoomIn = () => {
-    const newScale = Math.min(scale + 0.1, 4); // Limit the maximum scale
-    setScale(newScale);
-    api.start({ scale: newScale });
-  };
-
-  const handleZoomOut = () => {
-    const newScale = Math.max(scale - 0.1, 1); // Limit the minimum scale
-    setScale(newScale);
-    api.start({ scale: newScale });
-  };
-
   const handleFullscreen = () => {
     if (!isFullscreen) {
       if (containerRef.current) {
@@ -127,7 +105,6 @@ const VideoPlayer = () => {
         }
         setIsFullscreen(true);
         // Reset zoom and drag when entering fullscreen
-        setScale(1);
         api.start({ scale: 1, x: 0, y: 0 });
       }
     } else {
@@ -138,23 +115,141 @@ const VideoPlayer = () => {
     }
   };
 
+  const handleVideoSwitch = () => {
+    const newVideo =
+      currentVideo === "/sample-video.mp4"
+        ? "/alternative-video.mp4"
+        : "/sample-video.mp4";
+    setCurrentVideo(newVideo);
+    if (videoRef.current) {
+      videoRef.current.load();
+      videoRef.current.play();
+    }
+  };
+
+  const handleBackgroundRemoval = () => {
+    if (!cameraEnabled) {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then((stream) => {
+            if (cameraRef.current) {
+              cameraRef.current.srcObject = stream;
+              cameraRef.current.play();
+              setCameraEnabled(true);
+            }
+          })
+          .catch((error) => {
+            console.error(
+              "Error accessing camera for background removal:",
+              error,
+            );
+          });
+      }
+    } else {
+      if (cameraRef.current && cameraRef.current.srcObject) {
+        const stream = cameraRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach((track) => track.stop());
+        cameraRef.current.srcObject = null;
+        setCameraEnabled(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (videoRef.current) {
+        const videoAspectRatio =
+          videoRef.current.videoWidth / videoRef.current.videoHeight;
+        const container = containerRef.current;
+        if (container) {
+          container.style.width = `${container.clientHeight * videoAspectRatio}px`;
+        }
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initial call to set size based on video aspect ratio
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    const handleEnded = () => {
+      setIsPlaying(false);
+    };
+
+    if (videoElement) {
+      videoElement.addEventListener("ended", handleEnded);
+    }
+
+    return () => {
+      if (videoElement) {
+        videoElement.removeEventListener("ended", handleEnded);
+      }
+    };
+  }, [videoRef]);
+
   return (
-    <Box sx={{ textAlign: "center" }} ref={containerRef} className="relative">
+    <Box
+      sx={{
+        textAlign: "center",
+        position: "relative",
+        width: "100%",
+        height: "100vh",
+        overflow: "hidden",
+      }}
+      ref={containerRef}
+    >
       <Box
         sx={{
-          position: "relative",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
           display: "inline-block",
           overflow: "hidden",
+          width: "100%",
+          height: "100%",
+          maxWidth: "600px",
+          maxHeight: "auto",
         }}
       >
-        <animated.div style={{ ...style }}>
+        <video
+          ref={cameraRef}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transform: "scaleX(-1)", // Add this line to flip the camera view
+            zIndex: 0,
+            display: cameraEnabled ? "block" : "none",
+          }}
+          autoPlay
+          muted
+        ></video>
+        <animated.div
+          style={{
+            ...style,
+            opacity: cameraEnabled ? 0.5 : 1,
+            zIndex: 1,
+            position: "relative",
+          }}
+        >
           <video
             autoPlay
             ref={videoRef}
-            width="600"
-            style={{ transformOrigin: "center", touchAction: "none" }}
+            style={{
+              transformOrigin: "center",
+              touchAction: "none",
+              width: "100%",
+              height: "100%",
+            }}
+            controls={false}
           >
-            <source src="/sample-video.mp4" type="video/mp4" />
+            <source src={currentVideo} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </animated.div>
@@ -167,7 +262,7 @@ const VideoPlayer = () => {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              zIndex: 1,
+              zIndex: 2,
               backgroundColor: "rgba(0, 0, 0, 0.5)",
               "&:hover": {
                 backgroundColor: "rgba(0, 0, 0, 0.7)",
@@ -198,14 +293,14 @@ const VideoPlayer = () => {
         <IconButton sx={{ color: "white" }} onClick={handleMirror}>
           <FlipCameraAndroidIcon />
         </IconButton>
-        <IconButton sx={{ color: "white" }} onClick={handleZoomIn}>
-          <ZoomInIcon />
-        </IconButton>
-        <IconButton sx={{ color: "white" }} onClick={handleZoomOut}>
-          <ZoomOutIcon />
-        </IconButton>
         <IconButton sx={{ color: "white" }} onClick={handleFullscreen}>
           {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+        </IconButton>
+        <IconButton sx={{ color: "white" }} onClick={handleVideoSwitch}>
+          <SwitchVideoIcon />
+        </IconButton>
+        <IconButton sx={{ color: "white" }} onClick={handleBackgroundRemoval}>
+          <CameraIcon />
         </IconButton>
       </Box>
     </Box>
