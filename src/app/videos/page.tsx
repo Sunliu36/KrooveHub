@@ -10,7 +10,7 @@ export default function ComingSoon() {
       <Container
         maxWidth="sm"
         sx={{
-          mt: 8,
+          mt: 2,
           mb: 4,
           display: "flex",
           flexDirection: "column",
