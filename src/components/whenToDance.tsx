@@ -11,7 +11,7 @@ interface TimeSlot {
 
 const WhenToDance = () => {
   const indexToDay = ["日", "一", "二", "三", "四", "五", "六"];
-  const hours = Array.from({ length: 15 }, (_, i) => i + 8); // 8-22 hours
+  const hourIndexs = Array.from({ length: 15 }, (_, i) => i + 8); // 8-22 hourIndexs
   const [selectedTimes, setSelectedTimes] = useState<TimeSlot[]>([]);
   const [isSelecting, setIsSelecting] = useState(false);
   const [startSlot, setStartSlot] = useState<TimeSlot | null>(null);
@@ -67,10 +67,10 @@ const WhenToDance = () => {
       element &&
       element instanceof HTMLElement &&
       element.dataset.day &&
-      element.dataset.hour
+      element.dataset.hourIndex
     ) {
       const dayIndex = parseInt(element.dataset.day, 10);
-      const hourIndex = parseInt(element.dataset.hour, 10);
+      const hourIndex = parseInt(element.dataset.hourIndex, 10);
       handleMouseEnter(dayIndex, hourIndex);
     }
   };
@@ -140,10 +140,10 @@ const WhenToDance = () => {
           key={"day"}
           sx={{ maxWidth: 30, textAlign: "center", borderBottom: "solid #ccc" }}
         >
-          <Typography variant="h6">Hour</Typography>
-          {hours.map((hour) => (
+          <Typography variant="h6">hour</Typography>
+          {hourIndexs.map((hourIndex) => (
             <Button
-              key={hour}
+              key={hourIndex}
               sx={{
                 height: 20,
                 minWidth: 45,
@@ -157,7 +157,7 @@ const WhenToDance = () => {
               }}
               disabled
             >
-              {hour}:00
+              {hourIndex}:00
             </Button>
           ))}
         </Box>
@@ -171,31 +171,31 @@ const WhenToDance = () => {
             }}
           >
             <Typography variant="h6">{day}</Typography>
-            {hours.map((hour) => (
+            {hourIndexs.map((hourIndex) => (
               <Button
-                key={`${day}-${hour}`}
+                key={`${day}-${hourIndex}`}
                 data-day={dayIndex}
-                data-hour={hour}
+                data-hour={hourIndex}
                 sx={{
                   height: 20,
                   minWidth: 30,
                   padding: 0,
                   marginBottom: 0.5,
-                  border: isSlotSelected(dayIndex, hour)
+                  border: isSlotSelected(dayIndex, hourIndex)
                     ? "2px solid blue" // Added border for selected times
                     : "1px solid #ccc", // Default border
-                  backgroundColor: isSlotSelected(dayIndex, hour)
+                  backgroundColor: isSlotSelected(dayIndex, hourIndex)
                     ? "lightgreen"
                     : "lightgray",
                   "&:hover": {
-                    backgroundColor: isSlotSelected(dayIndex, hour)
+                    backgroundColor: isSlotSelected(dayIndex, hourIndex)
                       ? "green"
                       : "gray",
                   },
                 }}
-                onMouseDown={() => handleMouseDown(dayIndex, hour)}
-                onMouseEnter={() => handleMouseEnter(dayIndex, hour)}
-                onTouchStart={() => handleTouchStart(dayIndex, hour)}
+                onMouseEnter={() => handleMouseEnter(dayIndex, hourIndex)}
+                onMouseDown={() => handleMouseDown(dayIndex, hourIndex)}
+                onTouchStart={() => handleTouchStart(dayIndex, hourIndex)}
               />
             ))}
           </Box>

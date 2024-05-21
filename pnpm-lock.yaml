@@ -28,12 +28,18 @@ importers:
       "@mui/material":
         specifier: ^5.15.15
         version: 5.15.15(@emotion/react@11.11.4(@types/react@18.2.79)(react@18.2.0))(@emotion/styled@11.11.5(@emotion/react@11.11.4(@types/react@18.2.79)(react@18.2.0))(@types/react@18.2.79)(react@18.2.0))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      "@react-spring/web":
+        specifier: ^9.7.3
+        version: 9.7.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       "@types/bcryptjs":
         specifier: ^2.4.6
         version: 2.4.6
       "@types/pg":
         specifier: ^8.11.5
         version: 8.11.5
+      "@use-gesture/react":
+        specifier: ^10.3.1
+        version: 10.3.1(react@18.2.0)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -2059,6 +2065,45 @@ packages:
         integrity: sha512-/RVXdLvJxLg4QKvMoM5WlwNR9ViO9z8B/qPcc+C0Sa/teJY7QG7kJ441DwzOjMYEY7GmU4dj5EcGHIkKZiQZCA==,
       }
 
+  "@react-spring/animated@9.7.3":
+    resolution:
+      {
+        integrity: sha512-5CWeNJt9pNgyvuSzQH+uy2pvTg8Y4/OisoscZIR8/ZNLIOI+CatFBhGZpDGTF/OzdNFsAoGk3wiUYTwoJ0YIvw==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
+  "@react-spring/core@9.7.3":
+    resolution:
+      {
+        integrity: sha512-IqFdPVf3ZOC1Cx7+M0cXf4odNLxDC+n7IN3MDcVCTIOSBfqEcBebSv+vlY5AhM0zw05PDbjKrNmBpzv/AqpjnQ==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
+  "@react-spring/shared@9.7.3":
+    resolution:
+      {
+        integrity: sha512-NEopD+9S5xYyQ0pGtioacLhL2luflh6HACSSDUZOwLHoxA5eku1UPuqcJqjwSD6luKjjLfiLOspxo43FUHKKSA==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
+  "@react-spring/types@9.7.3":
+    resolution:
+      {
+        integrity: sha512-Kpx/fQ/ZFX31OtlqVEFfgaD1ACzul4NksrvIgYfIFq9JpDHFwQkMVZ10tbo0FU/grje4rcL4EIrjekl3kYwgWw==,
+      }
+
+  "@react-spring/web@9.7.3":
+    resolution:
+      {
+        integrity: sha512-BXt6BpS9aJL/QdVqEIX9YoUy8CE6TJrU0mNCqSoxdXlIeNcEBWOfIyE6B14ENNsyQKS3wOWkiJfco0tCr/9tUg==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+
   "@rollup/plugin-babel@5.3.1":
     resolution:
       {
@@ -2294,6 +2339,20 @@ packages:
       {
         integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==,
       }
+
+  "@use-gesture/core@10.3.1":
+    resolution:
+      {
+        integrity: sha512-WcINiDt8WjqBdUXye25anHiNxPc0VOrlT8F6LLkU6cycrOGUDyY/yyFmsg3k8i5OLvv25llc0QC45GhR/C8llw==,
+      }
+
+  "@use-gesture/react@10.3.1":
+    resolution:
+      {
+        integrity: sha512-Yy19y6O2GJq8f7CHf7L0nxL8bf4PZCPaVOCgJrusOeFHY1LvHgYXnmnXg6N5iwAnbgbZCDjo60SiM6IPJi9C5g==,
+      }
+    peerDependencies:
+      react: ">= 16.8.0"
 
   "@webassemblyjs/ast@1.12.1":
     resolution:
@@ -8057,6 +8116,35 @@ snapshots:
 
   "@react-dnd/shallowequal@4.0.2": {}
 
+  "@react-spring/animated@9.7.3(react@18.2.0)":
+    dependencies:
+      "@react-spring/shared": 9.7.3(react@18.2.0)
+      "@react-spring/types": 9.7.3
+      react: 18.2.0
+
+  "@react-spring/core@9.7.3(react@18.2.0)":
+    dependencies:
+      "@react-spring/animated": 9.7.3(react@18.2.0)
+      "@react-spring/shared": 9.7.3(react@18.2.0)
+      "@react-spring/types": 9.7.3
+      react: 18.2.0
+
+  "@react-spring/shared@9.7.3(react@18.2.0)":
+    dependencies:
+      "@react-spring/types": 9.7.3
+      react: 18.2.0
+
+  "@react-spring/types@9.7.3": {}
+
+  "@react-spring/web@9.7.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)":
+    dependencies:
+      "@react-spring/animated": 9.7.3(react@18.2.0)
+      "@react-spring/core": 9.7.3(react@18.2.0)
+      "@react-spring/shared": 9.7.3(react@18.2.0)
+      "@react-spring/types": 9.7.3
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
   "@rollup/plugin-babel@5.3.1(@babel/core@7.24.4)(rollup@2.79.1)":
     dependencies:
       "@babel/core": 7.24.4
@@ -8216,6 +8304,13 @@ snapshots:
       eslint-visitor-keys: 3.4.3
 
   "@ungap/structured-clone@1.2.0": {}
+
+  "@use-gesture/core@10.3.1": {}
+
+  "@use-gesture/react@10.3.1(react@18.2.0)":
+    dependencies:
+      "@use-gesture/core": 10.3.1
+      react: 18.2.0
 
   "@webassemblyjs/ast@1.12.1":
     dependencies:

@@ -16,20 +16,22 @@ interface Event {
 function EventsIdPage() {
   const params = useParams();
   const name = params.classname?.toString();
-  const [dbEvent, setDbEvent] = useState<Event>({
-    img: "",
-    title: "",
-    description: "",
-  });
+  const [dbEvent, setDbEvent] = useState<Event | null>(null);
+
   useEffect(() => {
-    fetch(`/api/class/${name}`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        if (data) setDbEvent(data);
-      })
-      .catch((error) => console.error("Failed to load class data", error));
+    if (name) {
+      fetch(`/api/class/${name}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data) setDbEvent(data);
+        })
+        .catch((error) => console.error("Failed to load class data", error));
+    }
   }, [name]);
+
+  if (!dbEvent) {
+    return <div>Loading...</div>; // Show a loading state until the data is fetched
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center text-dimWhite">

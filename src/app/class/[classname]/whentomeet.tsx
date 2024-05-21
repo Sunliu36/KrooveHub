@@ -22,12 +22,11 @@ interface WhenToMeetProps {
   classname: string;
 }
 
-const WhenToMeet: React.FC<WhenToMeetProps> = ({ classname }) => {
+const WhenToDance: React.FC<WhenToMeetProps> = ({ classname }) => {
   const [selectedTimes, setSelectedTimes] = useState<TimeSlot[]>([]);
   const [isSelecting, setIsSelecting] = useState(false);
   const [startSlot, setStartSlot] = useState<TimeSlot | null>(null);
   const [showNumber, setShowNumber] = useState<boolean>(false);
-  const [isUnselecting, setIsUnselecting] = useState(false);
   const [availability, setAvailability] = useState<AvailabilityType>({});
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -40,82 +39,35 @@ const WhenToMeet: React.FC<WhenToMeetProps> = ({ classname }) => {
     );
   };
 
-  const handleMouseDown = (dayIndex: number, hourIndex: number) => {
+  const toggleSlot = (dayIndex: number, hourIndex: number) => {
     const selected = isSlotSelected(dayIndex, hourIndex);
-    setIsSelecting(true);
-    setIsUnselecting(selected);
-    setStartSlot({ dayIndex, hourIndex });
-
     if (selected) {
       setSelectedTimes((current) =>
-        current?.filter(
+        current.filter(
           (slot) =>
             !(slot.dayIndex === dayIndex && slot.hourIndex === hourIndex),
         ),
       );
     } else {
-      setSelectedTimes((current) => [
-        ...(current || []),
-        { dayIndex, hourIndex },
-      ]);
+      setSelectedTimes((current) => [...current, { dayIndex, hourIndex }]);
     }
+  };
+
+  const handleMouseDown = (dayIndex: number, hourIndex: number) => {
+    toggleSlot(dayIndex, hourIndex);
+    setIsSelecting(true);
+    setStartSlot({ dayIndex, hourIndex });
   };
 
   const handleMouseEnter = (dayIndex: number, hourIndex: number) => {
     if (isSelecting && startSlot) {
-      const dayStartIndex = startSlot.dayIndex;
-      const dayEndIndex = dayIndex;
-      const hourStartIndex = startSlot.hourIndex;
-      const hourEndIndex = hourIndex;
-
-      const newSelectedTimes: TimeSlot[] = [];
-
-      for (
-        let d = Math.min(dayStartIndex, dayEndIndex);
-        d <= Math.max(dayStartIndex, dayEndIndex);
-        d++
-      ) {
-        for (
-          let h = Math.min(hourStartIndex, hourEndIndex);
-          h <= Math.max(hourStartIndex, hourEndIndex);
-          h++
-        ) {
-          const slot: TimeSlot = { dayIndex: d, hourIndex: h };
-          newSelectedTimes.push(slot);
-        }
-      }
-
-      if (isUnselecting) {
-        setSelectedTimes((current) =>
-          current?.filter(
-            (slot) =>
-              !newSelectedTimes.some(
-                (newSlot) =>
-                  newSlot.dayIndex === slot.dayIndex &&
-                  newSlot.hourIndex === slot.hourIndex,
-              ),
-          ),
-        );
-      } else {
-        setSelectedTimes((current) => [
-          ...current.filter(
-            (slot) =>
-              !newSelectedTimes.some(
-                (newSlot) =>
-                  newSlot.dayIndex === slot.dayIndex &&
-                  newSlot.hourIndex === slot.hourIndex,
-              ),
-          ),
-          ...newSelectedTimes,
-        ]);
-      }
+      toggleSlot(dayIndex, hourIndex);
     }
   };
 
   const handleMouseUp = () => {
     setIsSelecting(false);
     setStartSlot(null);
-    setIsUnselecting(false);
   };
 
   const handleTouchStart = (dayIndex: number, hourIndex: number) => {
@@ -218,9 +170,7 @@ const WhenToMeet: React.FC<WhenToMeetProps> = ({ classname }) => {
 
   return (
     <>
-      <Box
-        sx={{ maxWidth: 920, mx: "auto", my: 4, padding: 0, marginBottom: 0 }}
-      >
+      <Box sx={{ padding: 0, marginBottom: 0 }}>
         <Typography variant="h6">Availability Legend</Typography>
         <Grid container spacing={1}>
           {numPeople.map((count, index) => (
@@ -263,6 +213,8 @@ const WhenToMeet: React.FC<WhenToMeetProps> = ({ classname }) => {
           gridTemplateColumns: "60px repeat(7, 1fr)",
         }}
         onMouseUp={handleMouseUp}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
       >
         <Box
           key={"day"}
@@ -364,4 +316,4 @@ const WhenToMeet: React.FC<WhenToMeetProps> = ({ classname }) => {
   );
 };
 
-export default WhenToMeet;
+export default WhenToDance;
