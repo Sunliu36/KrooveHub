@@ -15,6 +15,7 @@ import {
   Select,
   IconButton,
   SelectChangeEvent,
+  Slider,
 } from "@mui/material";
 import { useSpring, animated } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
@@ -29,6 +30,7 @@ const VideoPlayer = () => {
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [currentVideo, setCurrentVideo] = useState<string>("/sample-video.mp4");
   const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
+  const [opacity, setOpacity] = useState<number>(20);
   const [style, api] = useSpring(() => ({
     scale: 1,
     x: 0,
@@ -118,7 +120,7 @@ const VideoPlayer = () => {
   const handleVideoSwitch = () => {
     const newVideo =
       currentVideo === "/sample-video.mp4"
-        ? "/alternative-video.mp4"
+        ? "/sample-video2.mp4"
         : "/sample-video.mp4";
     setCurrentVideo(newVideo);
     if (videoRef.current) {
@@ -189,6 +191,10 @@ const VideoPlayer = () => {
     };
   }, [videoRef]);
 
+  const handleOpacityChange = (event: Event, newValue: number | number[]) => {
+    setOpacity(newValue as number);
+  };
+
   return (
     <Box
       sx={{
@@ -233,7 +239,7 @@ const VideoPlayer = () => {
         <animated.div
           style={{
             ...style,
-            opacity: cameraEnabled ? 0.5 : 1,
+            opacity: cameraEnabled ? opacity / 100 : 100,
             zIndex: 1,
             position: "relative",
           }}
@@ -302,6 +308,16 @@ const VideoPlayer = () => {
         <IconButton sx={{ color: "white" }} onClick={handleBackgroundRemoval}>
           <CameraIcon />
         </IconButton>
+        {cameraEnabled && (
+          <Slider
+            value={opacity}
+            onChange={handleOpacityChange}
+            aria-labelledby="opacity-slider"
+            min={0}
+            max={100}
+            sx={{ width: 150, color: "white" }}
+          />
+        )}
       </Box>
     </Box>
   );
