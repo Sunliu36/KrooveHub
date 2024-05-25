@@ -2,8 +2,17 @@
 
 import * as React from "react";
 
-import Image from "next/image";
+import Link from "next/link";
 
+import {
+  SignInButton,
+  SignOutButton,
+  SignUpButton,
+  SignUp,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
@@ -17,8 +26,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const pages = ["About", "Class", "Videos", "MixPlayer"];
+const settings = ["Profile", "WhenTo", "WhereTo"];
 
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -46,7 +55,7 @@ function NavBar() {
   return (
     <div className="fixed left-0 top-0 flex w-full justify-center  dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30">
       <AppBar position="static">
-        <Container maxWidth="xl" className="bg-black">
+        <Container maxWidth={false} className="bg-black">
           <Toolbar disableGutters>
             <Typography
               variant="h6"
@@ -95,9 +104,15 @@ function NavBar() {
                 }}
               >
                 {pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
-                  </MenuItem>
+                  <Link
+                    key={page}
+                    href={`/${page.toLowerCase()}`} // Create a lowercase version of the page name for the URL path
+                    color="inherit" // Ensure it inherits the correct color
+                  >
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">{page}</Typography>
+                    </MenuItem>
+                  </Link>
                 ))}
               </Menu>
             </Box>
@@ -125,6 +140,7 @@ function NavBar() {
                   key={page}
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: "white", display: "block" }}
+                  href={`/${page.toLowerCase()}`}
                 >
                   {page}
                 </Button>
@@ -134,7 +150,12 @@ function NavBar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <SignedIn>
+                    <UserButton />
+                  </SignedIn>
+                  <SignedOut>
+                    <Avatar alt="Remy Sharp" />
+                  </SignedOut>
                 </IconButton>
               </Tooltip>
               <Menu
@@ -154,10 +175,24 @@ function NavBar() {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
+                  <Link
+                    key={setting}
+                    href={`/${setting.toLowerCase()}`} // Create a lowercase version of the page name for the URL path
+                    color="inherit" // Ensure it inherits the correct color
+                  >
+                    <MenuItem onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  </Link>
                 ))}
+                <MenuItem>
+                  <SignedIn>
+                    <SignOutButton />
+                  </SignedIn>
+                  <SignedOut>
+                    <SignUpButton />
+                  </SignedOut>
+                </MenuItem>
               </Menu>
             </Box>
           </Toolbar>
