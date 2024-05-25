@@ -247,6 +247,8 @@ const VideoPlayer = () => {
           }}
           autoPlay
           muted
+          webkit-playsinline
+          playsInline
         ></video>
         <animated.div
           style={{
@@ -266,6 +268,8 @@ const VideoPlayer = () => {
               height: "100%",
             }}
             controls={false}
+            webkit-playsinline
+            playsInline
           >
             <source src={currentVideo} type="video/mp4" />
             Your browser does not support the video tag.

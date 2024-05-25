@@ -460,6 +460,8 @@ const VideoPlayer = () => {
               }}
               autoPlay
               muted
+              webkit-playsinline
+              playsInline
             >
               <source src={currentVideo} type="video/mp4" />
               Your browser does not support the video tag.
@@ -483,6 +485,8 @@ const VideoPlayer = () => {
                 }}
                 autoPlay
                 muted
+                webkit-playsinline
+                playsInline
                 controls={false}
               >
                 <source src={overlayVideo} type="video/mp4" />
