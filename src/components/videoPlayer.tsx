@@ -9,6 +9,7 @@ import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SwitchVideoIcon from "@mui/icons-material/SwitchVideo";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 import {
   Box,
   MenuItem,
@@ -195,6 +196,17 @@ const VideoPlayer = () => {
     setOpacity(newValue as number);
   };
 
+  const handleUploadVideo = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const url = URL.createObjectURL(event.target.files[0]);
+      setCurrentVideo(url);
+      if (videoRef.current) {
+        videoRef.current.load();
+        videoRef.current.play();
+      }
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -308,6 +320,18 @@ const VideoPlayer = () => {
         <IconButton sx={{ color: "white" }} onClick={handleBackgroundRemoval}>
           <CameraIcon />
         </IconButton>
+        <input
+          accept="video/*"
+          style={{ display: "none" }}
+          id="upload-video"
+          type="file"
+          onChange={handleUploadVideo}
+        />
+        <label htmlFor="upload-video">
+          <IconButton sx={{ color: "white" }} component="span">
+            <UploadFileIcon />
+          </IconButton>
+        </label>
         {cameraEnabled && (
           <Slider
             value={opacity}

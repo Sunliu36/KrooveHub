@@ -8,8 +8,8 @@ export default function Footer() {
       sx={{
         backgroundColor: "inherit",
         color: "white",
-        py: 2,
-        mt: 4,
+        mt: 2,
+        mb: 2,
         textAlign: "center",
       }}
     >

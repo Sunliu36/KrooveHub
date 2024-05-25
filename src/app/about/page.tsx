@@ -55,11 +55,12 @@ export default function About() {
   return (
     <div
       style={{
-        background: "linear-gradient(to right, #2C5364, #203A43, #0F2027)",
-        minHeight: "100vh", // Ensure the page takes up the full viewport height
+        background: "linear-gradient(to right, #000000, #1a1a1a, #000000)",
+        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
+        color: "white",
       }}
     >
       <Container maxWidth="md" sx={{ flex: "1 0 auto" }}>
@@ -68,9 +69,10 @@ export default function About() {
           component="h1"
           align="center"
           sx={{
-            fontWeight: "bold", // Make the text bold
-            fontSize: "3rem", // Adjust the font size similarly to 'text-4xl'
-            padding: "1rem", // Add padding around the text
+            fontWeight: "bold",
+            fontSize: "3rem",
+            padding: "1rem",
+            color: "white",
           }}
         >
           About GrooveHub
@@ -112,20 +114,23 @@ export default function About() {
               <ListItem
                 key={index}
                 sx={{
-                  backgroundColor: "#f0f0f0", // Light gray background color for the ListItem
-                  borderRadius: 2, // Rounds the corners slightly
-                  my: 2, // Adds vertical spacing between ListItems
-                  boxShadow: 1, // Adds a subtle shadow
+                  backgroundColor: "#333333",
+                  borderRadius: 2,
+                  my: 2,
+                  boxShadow: 1,
                 }}
               >
                 <ListItemIcon>
-                  <CheckCircleIcon color="secondary" />
+                  <CheckCircleIcon sx={{ color: "#FFD700" }} />
                 </ListItemIcon>
                 <ListItemText
                   primary={item.title}
                   secondary={item.description}
                   primaryTypographyProps={{
-                    sx: { color: "black" }, // Set the primary text color to black
+                    sx: { color: "white" },
+                  }}
+                  secondaryTypographyProps={{
+                    sx: { color: "white" },
                   }}
                 />
               </ListItem>
@@ -142,20 +147,23 @@ export default function About() {
               <ListItem
                 key={index}
                 sx={{
-                  backgroundColor: "#f0f0f0", // Light gray background color for the ListItem
-                  borderRadius: 2, // Rounds the corners slightly
-                  my: 2, // Adds vertical spacing between ListItems
-                  boxShadow: 1, // Adds a subtle shadow
+                  backgroundColor: "#333333",
+                  borderRadius: 2,
+                  my: 2,
+                  boxShadow: 1,
                 }}
               >
                 <ListItemIcon>
-                  <CheckCircleIcon color="secondary" />
+                  <CheckCircleIcon sx={{ color: "#FFD700" }} />
                 </ListItemIcon>
                 <ListItemText
                   primary={item.title}
                   secondary={item.description}
                   primaryTypographyProps={{
-                    sx: { color: "black" }, // Set the primary text color to black
+                    sx: { color: "white" },
+                  }}
+                  secondaryTypographyProps={{
+                    sx: { color: "white" },
                   }}
                 />
               </ListItem>
@@ -175,7 +183,9 @@ export default function About() {
           </Typography>
         </Box>
       </Container>
-      <Footer />
+      <div className="fixed bottom-0 left-0 right-0 z-10 bg-black shadow-md h-15">
+        <Footer />
+      </div>
     </div>
   );
 }
