@@ -349,7 +349,7 @@ const VideoPlayer = () => {
           </IconButton>
         </label>
         <Popover
-          open={openOpacity}
+          open={openOpacity && cameraEnabled}
           anchorEl={anchorElOpacity}
           onClose={handlePopoverCloseOpacity}
           anchorOrigin={{
