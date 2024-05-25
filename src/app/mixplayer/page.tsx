@@ -571,7 +571,7 @@ const VideoPlayer = () => {
             aria-labelledby="opacity-slider"
             min={0}
             max={100}
-            sx={{ width: 150, color: "white" }}
+            sx={{ width: 150, color: "gray" }}
           />
         </Box>
       </Popover>
@@ -590,7 +590,7 @@ const VideoPlayer = () => {
       >
         <Box p={2}>
           <Typography variant="h6" gutterBottom>
-            Video 1 Time
+            Template
           </Typography>
           <Slider
             value={currentTime1}
@@ -598,10 +598,10 @@ const VideoPlayer = () => {
             aria-labelledby="time-slider1"
             min={0}
             max={100}
-            sx={{ width: 300, color: "white" }}
+            sx={{ width: 300, color: "gray" }}
           />
           <Typography variant="h6" gutterBottom>
-            Video 2 Time
+            Own Video
           </Typography>
           <Slider
             value={currentTime2}
@@ -609,7 +609,7 @@ const VideoPlayer = () => {
             aria-labelledby="time-slider2"
             min={0}
             max={100}
-            sx={{ width: 300, color: "white" }}
+            sx={{ width: 300, color: "gray" }}
           />
         </Box>
       </Popover>

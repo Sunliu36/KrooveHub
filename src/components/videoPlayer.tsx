@@ -17,6 +17,8 @@ import {
   IconButton,
   SelectChangeEvent,
   Slider,
+  Popover,
+  Typography,
 } from "@mui/material";
 import { useSpring, animated } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
@@ -38,6 +40,10 @@ const VideoPlayer = () => {
     y: 0,
     scaleX: 1,
   }));
+
+  const [anchorElOpacity, setAnchorElOpacity] = useState<HTMLElement | null>(
+    null,
+  );
 
   useGesture(
     {
@@ -130,7 +136,8 @@ const VideoPlayer = () => {
     }
   };
 
-  const handleBackgroundRemoval = () => {
+  const handleBackgroundRemoval = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElOpacity(event.currentTarget);
     if (!cameraEnabled) {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices
@@ -192,10 +199,6 @@ const VideoPlayer = () => {
     };
   }, [videoRef]);
 
-  const handleOpacityChange = (event: Event, newValue: number | number[]) => {
-    setOpacity(newValue as number);
-  };
-
   const handleUploadVideo = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const url = URL.createObjectURL(event.target.files[0]);
@@ -206,6 +209,15 @@ const VideoPlayer = () => {
       }
     }
   };
+
+  const handleOpacityChange = (event: Event, newValue: number | number[]) => {
+    setOpacity(newValue as number);
+  };
+
+  const handlePopoverCloseOpacity = () => {
+    setAnchorElOpacity(null);
+  };
+  const openOpacity = Boolean(anchorElOpacity);
 
   return (
     <Box
@@ -336,16 +348,33 @@ const VideoPlayer = () => {
             <UploadFileIcon />
           </IconButton>
         </label>
-        {cameraEnabled && (
-          <Slider
-            value={opacity}
-            onChange={handleOpacityChange}
-            aria-labelledby="opacity-slider"
-            min={0}
-            max={100}
-            sx={{ width: 150, color: "white" }}
-          />
-        )}
+        <Popover
+          open={openOpacity}
+          anchorEl={anchorElOpacity}
+          onClose={handlePopoverCloseOpacity}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          transformOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+        >
+          <Box p={2}>
+            <Typography variant="h6" gutterBottom>
+              Opacity
+            </Typography>
+            <Slider
+              value={opacity}
+              onChange={handleOpacityChange}
+              aria-labelledby="opacity-slider"
+              min={0}
+              max={100}
+              sx={{ width: 150, color: "gray" }}
+            />
+          </Box>
+        </Popover>
       </Box>
     </Box>
   );
