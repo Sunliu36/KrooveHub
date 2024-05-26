@@ -25,7 +25,7 @@ import {
 import { useSpring, animated } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 
-const VideoPlayer = () => {
+const VideoPlayer: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const topVideoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -40,6 +40,8 @@ const VideoPlayer = () => {
   const [opacity, setOpacity] = useState<number>(50);
   const [currentTime1, setCurrentTime1] = useState<number>(0);
   const [currentTime2, setCurrentTime2] = useState<number>(0);
+  const [duration1, setDuration1] = useState<number>(100); // Default max duration for slider
+  const [duration2, setDuration2] = useState<number>(100); // Default max duration for slider
   const [showUpload, setShowUpload] = useState(true);
   const [anchorElOpacity, setAnchorElOpacity] = useState<HTMLElement | null>(
     null,
@@ -166,6 +168,7 @@ const VideoPlayer = () => {
 
   const handleTimeChange1 = (event: Event, newValue: number | number[]) => {
     if (videoRef.current) {
+      setDuration1(videoRef.current.duration);
       const newTime = newValue as number;
       videoRef.current.currentTime = newTime;
       setCurrentTime1(newTime);
@@ -174,6 +177,7 @@ const VideoPlayer = () => {
 
   const handleTimeChange2 = (event: Event, newValue: number | number[]) => {
     if (topVideoRef.current) {
+      setDuration2(topVideoRef.current.duration);
       const newTime = newValue as number;
       topVideoRef.current.currentTime = newTime;
       setCurrentTime2(newTime);
@@ -195,36 +199,6 @@ const VideoPlayer = () => {
     handleResize(); // Initial call to set size based on video aspect ratio
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  useEffect(() => {
-    const videoElement = videoRef.current;
-    const topVideoElement = topVideoRef.current;
-    const handleEnded = () => {
-      setIsPlaying(false);
-    };
-    const handleTimeUpdate1 = () => {
-      setCurrentTime1(videoElement!.currentTime);
-    };
-    const handleTimeUpdate2 = () => {
-      setCurrentTime2(topVideoElement!.currentTime);
-    };
-
-    if (videoElement && topVideoElement) {
-      videoElement.addEventListener("ended", handleEnded);
-      topVideoElement.addEventListener("ended", handleEnded);
-      videoElement.addEventListener("timeupdate", handleTimeUpdate1);
-      topVideoElement.addEventListener("timeupdate", handleTimeUpdate2);
-    }
-
-    return () => {
-      if (videoElement && topVideoElement) {
-        videoElement.removeEventListener("ended", handleEnded);
-        topVideoElement.removeEventListener("ended", handleEnded);
-        videoElement.removeEventListener("timeupdate", handleTimeUpdate1);
-        topVideoElement.removeEventListener("timeupdate", handleTimeUpdate2);
-      }
-    };
-  }, [videoRef, topVideoRef]);
 
   const handleOpacityChange = (event: Event, newValue: number | number[]) => {
     setOpacity(newValue as number);
@@ -250,7 +224,9 @@ const VideoPlayer = () => {
     if (fileName.length <= length * 2) {
       return fileName;
     }
-    return `${fileName.substring(0, length)}...${fileName.substring(fileName.length - length)}`;
+    return `${fileName.substring(0, length)}...${fileName.substring(
+      fileName.length - length,
+    )}`;
   };
 
   const openOpacity = Boolean(anchorElOpacity);
@@ -268,167 +244,165 @@ const VideoPlayer = () => {
       ref={containerRef}
     >
       {(!currentVideo || !overlayVideo || showUpload) && (
-        <>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            zIndex: 2,
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            padding: "1rem",
+            textAlign: "center",
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: { xs: "2rem", md: "4rem" },
+              fontWeight: "bold",
+              color: "white",
+              marginBottom: "1rem",
+            }}
+          >
+            Upload Video
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: { xs: "1rem", md: "1.5rem" },
+              fontWeight: "bold",
+              color: "white",
+              marginBottom: "2rem",
+            }}
+          >
+            Please upload both template and your own video.
+          </Typography>
           <Box
             sx={{
               display: "flex",
-              flexDirection: "column",
+              flexDirection: { xs: "column", md: "row" },
               justifyContent: "center",
               alignItems: "center",
-              height: "100%",
-              position: "absolute",
-              top: 0,
-              left: 0,
               width: "100%",
-              zIndex: 2,
-              backgroundColor: "rgba(0, 0, 0, 0.7)",
-              padding: "1rem",
-              textAlign: "center",
+              gap: "2rem",
             }}
           >
-            <Typography
-              sx={{
-                fontSize: { xs: "2rem", md: "4rem" },
-                fontWeight: "bold",
-                color: "white",
-                marginBottom: "1rem",
-              }}
-            >
-              Upload Video
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: "1rem", md: "1.5rem" },
-                fontWeight: "bold",
-                color: "white",
-                marginBottom: "2rem",
-              }}
-            >
-              Please upload both template and your own video.
-            </Typography>
             <Box
               sx={{
                 display: "flex",
-                flexDirection: { xs: "column", md: "row" },
+                flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                width: "100%",
-                gap: "2rem",
+                marginRight: { xs: 0, md: "2rem" },
               }}
             >
-              <Box
+              <input
+                accept="video/*"
+                style={{ display: "none" }}
+                id="upload-video"
+                type="file"
+                onChange={handleUploadVideo}
+              />
+              <label htmlFor="upload-video">
+                <IconButton sx={{ color: "white" }} component="span">
+                  <UploadFileIcon sx={{ fontSize: "5rem" }} />
+                </IconButton>
+              </label>
+              <Typography
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: { xs: 0, md: "2rem" },
+                  fontSize: { xs: "1rem", md: "1.5rem" },
+                  fontWeight: "bold",
+                  color: "white",
                 }}
               >
-                <input
-                  accept="video/*"
-                  style={{ display: "none" }}
-                  id="upload-video"
-                  type="file"
-                  onChange={handleUploadVideo}
-                />
-                <label htmlFor="upload-video">
-                  <IconButton sx={{ color: "white" }} component="span">
-                    <UploadFileIcon sx={{ fontSize: "5rem" }} />
-                  </IconButton>
-                </label>
-                <Typography
-                  sx={{
-                    fontSize: { xs: "1rem", md: "1.5rem" },
-                    fontWeight: "bold",
-                    color: "white",
-                  }}
-                >
-                  Template
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: { xs: "1rem", md: "1.5rem" },
-                    fontWeight: "bold",
-                    color: "white",
-                  }}
-                >
-                  {currentVideoFileName
-                    ? truncateFileName(currentVideoFileName)
-                    : "No Video Selected"}
-                </Typography>
-              </Box>
-              <Box
+                Template
+              </Typography>
+              <Typography
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginLeft: { xs: 0, md: "2rem" },
+                  fontSize: { xs: "1rem", md: "1.5rem" },
+                  fontWeight: "bold",
+                  color: "white",
                 }}
               >
-                <input
-                  accept="video/*"
-                  style={{ display: "none" }}
-                  id="upload-overlay-video"
-                  type="file"
-                  onChange={handleUploadOverlayVideo}
-                />
-                <label htmlFor="upload-overlay-video">
-                  <IconButton sx={{ color: "white" }} component="span">
-                    <UploadFileIcon sx={{ fontSize: "5rem" }} />
-                  </IconButton>
-                </label>
-                <Typography
-                  sx={{
-                    fontSize: { xs: "1rem", md: "1.5rem" },
-                    fontWeight: "bold",
-                    color: "white",
-                  }}
-                >
-                  Own Video
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: { xs: "1rem", md: "1.5rem" },
-                    fontWeight: "bold",
-                    color: "white",
-                  }}
-                >
-                  {overlayVideoFileName
-                    ? truncateFileName(overlayVideoFileName)
-                    : "No Video Selected"}
-                </Typography>
-              </Box>
+                {currentVideoFileName
+                  ? truncateFileName(currentVideoFileName)
+                  : "No Video Selected"}
+              </Typography>
             </Box>
-            <Button
-              variant="contained"
+            <Box
               sx={{
-                backgroundColor: "white",
-                color: "black",
-                fontWeight: "bold",
-                width: "150px",
-                height: "50px",
-                borderRadius: "25px",
-                marginTop: "2rem",
-                "&:hover": {
-                  backgroundColor: "black",
-                  color: "white",
-                  border: "1px solid white",
-                },
-                "&:disabled": {
-                  backgroundColor: "gray",
-                  color: "white",
-                  cursor: "not-allowed",
-                },
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                marginLeft: { xs: 0, md: "2rem" },
               }}
-              onClick={handleToggle}
-              disabled={!currentVideo || !overlayVideo}
             >
-              Let&apos;s Go!
-            </Button>
+              <input
+                accept="video/*"
+                style={{ display: "none" }}
+                id="upload-overlay-video"
+                type="file"
+                onChange={handleUploadOverlayVideo}
+              />
+              <label htmlFor="upload-overlay-video">
+                <IconButton sx={{ color: "white" }} component="span">
+                  <UploadFileIcon sx={{ fontSize: "5rem" }} />
+                </IconButton>
+              </label>
+              <Typography
+                sx={{
+                  fontSize: { xs: "1rem", md: "1.5rem" },
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                Own Video
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: { xs: "1rem", md: "1.5rem" },
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                {overlayVideoFileName
+                  ? truncateFileName(overlayVideoFileName)
+                  : "No Video Selected"}
+              </Typography>
+            </Box>
           </Box>
-        </>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "white",
+              color: "black",
+              fontWeight: "bold",
+              width: "150px",
+              height: "50px",
+              borderRadius: "25px",
+              marginTop: "2rem",
+              "&:hover": {
+                backgroundColor: "black",
+                color: "white",
+                border: "1px solid white",
+              },
+              "&:disabled": {
+                backgroundColor: "gray",
+                color: "white",
+                cursor: "not-allowed",
+              },
+            }}
+            onClick={handleToggle}
+            disabled={!currentVideo || !overlayVideo}
+          >
+            Let&apos;s Go!
+          </Button>
+        </Box>
       )}
 
       <Box
@@ -460,7 +434,7 @@ const VideoPlayer = () => {
               }}
               autoPlay
               muted
-              webkit-playsinline
+              webkit-playsinline="true"
               playsInline
             >
               <source src={currentVideo} type="video/mp4" />
@@ -485,7 +459,7 @@ const VideoPlayer = () => {
                 }}
                 autoPlay
                 muted
-                webkit-playsinline
+                webkit-playsinline="true"
                 playsInline
                 controls={false}
               >
@@ -597,8 +571,8 @@ const VideoPlayer = () => {
             onChange={handleTimeChange1}
             aria-labelledby="time-slider1"
             min={0}
-            max={100}
-            sx={{ width: 300, color: "gray" }}
+            max={duration1}
+            sx={{ width: 150, color: "gray" }}
           />
           <Typography variant="h6" gutterBottom>
             Own Video
@@ -608,8 +582,8 @@ const VideoPlayer = () => {
             onChange={handleTimeChange2}
             aria-labelledby="time-slider2"
             min={0}
-            max={100}
-            sx={{ width: 300, color: "gray" }}
+            max={duration2}
+            sx={{ width: 150, color: "gray" }}
           />
         </Box>
       </Popover>
