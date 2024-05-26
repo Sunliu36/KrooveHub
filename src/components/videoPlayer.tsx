@@ -259,6 +259,8 @@ const VideoPlayer = () => {
           }}
           autoPlay
           muted
+          webkit-playsinline="true"
+          playsInline
         ></video>
         <animated.div
           style={{
