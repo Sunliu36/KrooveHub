@@ -8,6 +8,7 @@ import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import SportsScoreIcon from "@mui/icons-material/SportsScore";
 import SwitchVideoIcon from "@mui/icons-material/SwitchVideo";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import {
@@ -287,6 +288,24 @@ const VideoPlayer = () => {
             Your browser does not support the video tag.
           </video>
         </animated.div>
+        <IconButton
+          sx={{
+            position: "absolute",
+            top: 8, // Adjust top spacing
+            right: 8, // Adjust right spacing
+            zIndex: 3, // Make it appear on top of other elements
+            borderRadius: "50%", // Make it circular
+            color: "white", // Set icon color
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Add background color
+          }}
+          onClick={() => {
+            // go to score page
+            window.location.href = `/score${currentVideo.replace(".mp4", "")}`;
+          }}
+        >
+          {" "}
+          <SportsScoreIcon />{" "}
+        </IconButton>
         {!isPlaying && (
           <IconButton
             color="primary"
