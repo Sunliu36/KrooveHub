@@ -226,7 +226,7 @@ const VideoPlayer = () => {
         textAlign: "center",
         position: "relative",
         width: "100%",
-        height: "100vh",
+        height: "100%",
         overflow: "hidden",
       }}
       ref={containerRef}
@@ -291,7 +291,7 @@ const VideoPlayer = () => {
         <IconButton
           sx={{
             position: "absolute",
-            top: 8, // Adjust top spacing
+            top: 15, // Adjust top spacing
             right: 8, // Adjust right spacing
             zIndex: 3, // Make it appear on top of other elements
             borderRadius: "50%", // Make it circular
@@ -299,11 +299,9 @@ const VideoPlayer = () => {
             backgroundColor: "rgba(0, 0, 0, 0.5)", // Add background color
           }}
           onClick={() => {
-            // go to score page
             window.location.href = `/score${currentVideo.replace(".mp4", "")}`;
           }}
         >
-          {" "}
           <SportsScoreIcon />{" "}
         </IconButton>
         {!isPlaying && (
