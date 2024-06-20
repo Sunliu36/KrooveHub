@@ -26,8 +26,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
-const pages = ["About", "Class", "Videos", "MixPlayer"];
-const settings = ["Profile", "WhenTo", "WhereTo"];
+const pages = ["About", "Groups", "Videos", "MixPlayer", "Pricing"];
+const settings = ["Account", "Profile", "Settings"];
 
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(

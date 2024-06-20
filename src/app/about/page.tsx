@@ -75,8 +75,11 @@ export default function About() {
             color: "white",
           }}
         >
-          About GrooveHub
+          <h1 className="font-bold text-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+            About GrooveHub
+          </h1>
         </Typography>
+
         <Image
           src="/favicon.png"
           className="rounded-circle justify-center mx-auto mb-4"
@@ -171,7 +174,7 @@ export default function About() {
           </List>
         </Box>
 
-        <Box my={4}>
+        <Box my={4} mb={10}>
           <Typography variant="h4" component="h2" gutterBottom>
             Join the Movement
           </Typography>

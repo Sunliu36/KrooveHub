@@ -67,7 +67,7 @@ const userProfile: UserProfile = {
       template: "/sample-video2.mp4",
     },
     { url: "/sample-video2.mp4", description: "Sample Video 2" },
-    { url: "/sample-video.mp4", description: "Sample Video 3" },
+    { url: "/sample-video4.mp4", description: "Sample Video 3" },
   ],
   followers: 1200,
   following: 300,
@@ -94,7 +94,7 @@ const userProfile: UserProfile = {
   tags: [
     { url: "/sample-video3.mp4", description: "Tag Video 1" },
     { url: "/sample-video2.mp4", description: "Tag Video 2" },
-    { url: "/sample-video.mp4", description: "Tag Video 3" },
+    { url: "/sample-video5.mp4", description: "Tag Video 3" },
   ],
 };
 

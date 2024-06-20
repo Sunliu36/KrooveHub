@@ -34,7 +34,7 @@ const ScorePlayer = () => {
   const [currentVideo, setCurrentVideo] = useState<string>(`/${mp4}.mp4`);
   const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
   const [opacity, setOpacity] = useState<number>(20);
-  const [score, setScore] = useState<number>(0);
+  const [scores, setScores] = useState<number[]>([]);
   const [style, api] = useSpring(() => ({
     scale: 1,
     x: 0,
@@ -46,6 +46,7 @@ const ScorePlayer = () => {
   );
   const [maskPhotoUrl, setMaskPhotoUrl] = useState<string | null>(null);
   const [maskPhoto2Url, setMaskPhoto2Url] = useState<string | null>(null);
+
   const loadBodyPixModel = async () => {
     const net = await bodyPix.load();
     setBodypixnet(net);
@@ -56,6 +57,10 @@ const ScorePlayer = () => {
   }, []);
 
   const handlePlayPause = () => {
+    if (!cameraEnabled) {
+      handleBackgroundRemoval();
+      return;
+    }
     if (videoRef.current) {
       if (videoRef.current.paused && countdown === 0) {
         setCountdown(3); // Start countdown from 3 seconds
@@ -107,22 +112,17 @@ const ScorePlayer = () => {
     let totalCount = 0;
 
     for (let i = 0; i < pixels1.length; i += 4) {
-      // Consider only the alpha channel for mask presence
       const isMasked1 = pixels1[i + 3] > 0;
       const isMasked2 = pixels2[i + 3] > 0;
 
-      // Using bitwise AND to determine where both masks agree on having a mask
       if (!isMasked1 && !isMasked2) {
         matchCount++;
       }
-      // Using bitwise OR to determine where either mask has a mask
       if (!isMasked1 || !isMasked2) {
         totalCount++;
       }
     }
-    console.log("Match Count:", matchCount);
-    console.log("Total Count:", totalCount);
-    // Calculate the score as a percentage of matching areas to total possible mask areas
+
     if (totalCount === 0) return 0;
     const score = (matchCount / totalCount) * 100;
     return score;
@@ -135,7 +135,6 @@ const ScorePlayer = () => {
   const maskToImageUrl = (mask: ImageData) => {
     if (!mask) return null;
 
-    // Create a canvas to draw the mask
     const canvas = document.createElement("canvas");
     canvas.width = mask.width;
     canvas.height = mask.height;
@@ -143,15 +142,14 @@ const ScorePlayer = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return null;
 
-    // Draw the mask data onto the canvas
     ctx.putImageData(mask, 0, 0);
 
-    // Convert the canvas to a data URL
     return canvas.toDataURL();
   };
 
   const handleCompareMasks = async () => {
     if (
+      !isPlaying ||
       !bodypixnet ||
       !webcamRef.current ||
       !videoRef.current ||
@@ -164,7 +162,6 @@ const ScorePlayer = () => {
     const webcamVideoHeight = webcamRef.current.videoHeight;
     const webcamVideoWidth = webcamRef.current.videoWidth;
 
-    // Create canvases to match the display size of the video element
     const videoCanvas = document.createElement("canvas");
     videoCanvas.width = videoRect.width;
     videoCanvas.height = videoRect.height;
@@ -176,7 +173,6 @@ const ScorePlayer = () => {
     const videoCtx = videoCanvas.getContext("2d");
     const webcamCtx = webcamCanvas.getContext("2d");
 
-    // Draw the video to fill the canvas
     videoCtx?.drawImage(
       videoRef.current,
       0,
@@ -188,14 +184,12 @@ const ScorePlayer = () => {
     const scale = webcamRect.height / webcamVideoHeight;
     const offsetX = (webcamVideoWidth * scale - webcamRect.width) / 2;
     console.log("Offset X:", offsetX);
-    // Transform the webcam context to flip the webcam feed horizontally
-    webcamCtx?.scale(-scale, scale); // Flip horizontally
+
+    webcamCtx?.scale(-scale, scale);
     webcamCtx?.translate(-webcamVideoWidth + offsetX / scale, 0);
 
-    // Draw the webcam feed, scaled and flipped
     webcamCtx?.drawImage(webcamRef.current, 0, 0);
 
-    // Process both canvases with BodyPix
     const videoSegmentation = await bodypixnet.segmentPerson(videoCanvas, {
       internalResolution: "medium",
       segmentationThreshold: 0.6,
@@ -207,13 +201,9 @@ const ScorePlayer = () => {
 
     const videoMask = bodyPix.toMask(videoSegmentation);
     const webcamMask = bodyPix.toMask(webcamSegmentation);
-
-    // Calculate the matching score
     const score = compareMasks(videoMask, webcamMask);
-    setScore(score);
-    console.log("Score:", score);
+    setScores((prevScores) => [...prevScores, score]);
 
-    // Convert masks to image URLs
     const videoMaskUrl = maskToImageUrl(videoMask);
     const webcamMaskUrl = maskToImageUrl(webcamMask);
     setMaskPhotoUrl(videoMaskUrl);
@@ -240,14 +230,16 @@ const ScorePlayer = () => {
   };
   const openOpacity = Boolean(anchorElOpacity);
 
+  const averageScore =
+    scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+
   useEffect(() => {
     const interval = setInterval(() => {
       handleCompareMasks();
-    }, 1000); // Update score every second
+    }, 1000);
 
-    return () => clearInterval(interval); // Clean up the interval on component unmount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bodypixnet, webcamRef, videoRef, cameraEnabled]); // Rerun when dependencies change
+    return () => clearInterval(interval);
+  }, [isPlaying, bodypixnet, webcamRef, videoRef, cameraEnabled]);
 
   return (
     <Box
@@ -270,7 +262,6 @@ const ScorePlayer = () => {
           overflow: "hidden",
           width: "100%",
           height: "100%",
-          maxWidth: "600px",
           maxHeight: "auto",
         }}
       >
@@ -283,7 +274,7 @@ const ScorePlayer = () => {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            transform: "scaleX(-1)", // Flip the camera view
+            transform: "scaleX(-1)",
             zIndex: 0,
             display: cameraEnabled ? "block" : "none",
           }}
@@ -291,60 +282,34 @@ const ScorePlayer = () => {
           muted
           playsInline
         ></video>
-        {/* {maskPhoto2Url && (
-          <img
-            src={maskPhoto2Url}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              zIndex: 3,
-              opacity: 0.5, // Adjust opacity to see video and mask
-            }}
-          />
-        )} */}
         <animated.div
           style={{
             ...style,
             opacity: cameraEnabled ? opacity / 100 : 1,
             zIndex: 1,
-            position: "relative",
           }}
         >
           <video
             ref={videoRef}
             style={{
-              transformOrigin: "center",
-              touchAction: "none",
+              position: "absolute",
+              top: 0,
+              left: 0,
               width: "100%",
               height: "100%",
+              objectFit: "cover",
             }}
             controls={false}
             playsInline
-            muted
           >
             <source src={currentVideo} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          {/* {maskPhotoUrl && (
-            <img
-              src={maskPhotoUrl}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                zIndex: 3,
-                opacity: 0.5, // Adjust opacity to see video and mask
-              }}
-            />
-          )} */}
         </animated.div>
         {!isPlaying && (
           <IconButton
             color="primary"
-            onClick={handlePlayPause}
+            onClick={cameraEnabled ? handlePlayPause : handleBackgroundRemoval}
             sx={{
               position: "absolute",
               top: "50%",
@@ -358,18 +323,13 @@ const ScorePlayer = () => {
               "&:hover": {
                 backgroundColor: "green",
               },
-              ":disabled": {
-                backgroundColor: "gray",
-                color: "white",
-              },
             }}
-            disabled={!cameraEnabled}
           >
             {countdown > 0
               ? countdown
               : cameraEnabled
-                ? "Keep Play"
-                : "Open Camera"}{" "}
+                ? "Start Playing"
+                : "Open Camera"}
           </IconButton>
         )}
       </Box>
@@ -429,7 +389,7 @@ const ScorePlayer = () => {
           color="primary"
           onClick={handleCompareMasks}
         >
-          Score: {score.toFixed(2)}
+          Average Score: {averageScore.toFixed(2)}
         </Button>
       </Box>
     </Box>
