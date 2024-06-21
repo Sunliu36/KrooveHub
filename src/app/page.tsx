@@ -18,11 +18,11 @@ export default function Home() {
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex ">
         <div className="flex flex-col items-center justify-center w-full gap-3">
           <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
-            Welcome to GrooveHub
+            Welcome to KrooveHub
           </h1>
           <Image
             src="/favicon.png"
-            alt="GrooveHub Logo"
+            alt="KrooveHub Logo"
             width={200}
             height={200}
           />

@@ -76,7 +76,7 @@ export default function About() {
           }}
         >
           <h1 className="font-bold text-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
-            About GrooveHub
+            About KrooveHub
           </h1>
         </Typography>
 
@@ -85,12 +85,12 @@ export default function About() {
           className="rounded-circle justify-center mx-auto mb-4"
           width={200}
           height={200}
-          alt="About GrooveHub"
+          alt="About KrooveHub"
         />
         <Typography variant="body1" paragraph align="center">
-          Welcome to GrooveHub, the ultimate platform tailored exclusively for
+          Welcome to KrooveHub, the ultimate platform tailored exclusively for
           dancers! Whether you&apos;re an aspiring performer, a seasoned pro, or
-          someone who simply loves to groove, GrooveHub is designed to be your
+          someone who simply loves to groove, KrooveHub is designed to be your
           digital stage.
         </Typography>
 
@@ -100,7 +100,7 @@ export default function About() {
           </Typography>
           <Typography variant="body1" paragraph>
             Show off your dance talent and creativity by sharing your videos on
-            GrooveHub. Like on Instagram or TikTok, our platform makes it easy
+            KrooveHub. Like on Instagram or TikTok, our platform makes it easy
             to upload and showcase your dance videos, but here&apos;s the twist:
             it&apos;s only for dancers. Share your unique choreography,
             participate in challenges, and let your moves inspire others in the
@@ -143,7 +143,7 @@ export default function About() {
 
         <Box my={4}>
           <Typography variant="h4" component="h2" gutterBottom>
-            Why GrooveHub?
+            Why KrooveHub?
           </Typography>
           <List>
             {aboutInfos.map((item, index) => (
@@ -179,10 +179,10 @@ export default function About() {
             Join the Movement
           </Typography>
           <Typography variant="body1" paragraph>
-            GrooveHub is more than just a platform; it&apos;s a movement.
+            KrooveHub is more than just a platform; it&apos;s a movement.
             Whether you&apos;re here to learn, teach, or inspire, our community
             embraces the love of dance in all its forms. So come groove with
-            us—download GrooveHub today and start your journey!
+            us—download KrooveHub today and start your journey!
           </Typography>
         </Box>
       </Container>
