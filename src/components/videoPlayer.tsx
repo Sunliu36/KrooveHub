@@ -2,10 +2,9 @@
 
 import React, { useRef, useState, useEffect } from "react";
 
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CameraIcon from "@mui/icons-material/Camera";
 import FlipCameraAndroidIcon from "@mui/icons-material/FlipCameraAndroid";
-import FullscreenIcon from "@mui/icons-material/Fullscreen";
-import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SportsScoreIcon from "@mui/icons-material/SportsScore";
@@ -24,15 +23,19 @@ import {
 import { useSpring, animated } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 
-const VideoPlayer = () => {
+interface VideoPlayerProps {
+  url: string;
+  onSelect: (url: string | null) => void;
+}
+
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onSelect }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const cameraRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [isMirrored, setIsMirrored] = useState<boolean>(false);
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-  const [currentVideo, setCurrentVideo] = useState<string>("/sample-video.mp4");
+  const [currentVideo, setCurrentVideo] = useState<string>(url);
   const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
   const [opacity, setOpacity] = useState<number>(20);
   const [style, api] = useSpring(() => ({
@@ -45,6 +48,13 @@ const VideoPlayer = () => {
   const [anchorElOpacity, setAnchorElOpacity] = useState<HTMLElement | null>(
     null,
   );
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.load();
+      videoRef.current.play();
+    }
+  }, [url]);
 
   useGesture(
     {
@@ -106,30 +116,8 @@ const VideoPlayer = () => {
     api.start({ scaleX: isMirrored ? 1 : -1 });
   };
 
-  const handleFullscreen = () => {
-    if (!isFullscreen) {
-      if (containerRef.current) {
-        const elem = containerRef.current;
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        }
-        setIsFullscreen(true);
-        // Reset zoom and drag when entering fullscreen
-        api.start({ scale: 1, x: 0, y: 0 });
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-      setIsFullscreen(false);
-    }
-  };
-
   const handleVideoSwitch = () => {
-    const newVideo =
-      currentVideo === "/sample-video.mp4"
-        ? "/sample-video2.mp4"
-        : "/sample-video.mp4";
+    const newVideo = currentVideo === url ? "/sample-video2.mp4" : url;
     setCurrentVideo(newVideo);
     if (videoRef.current) {
       videoRef.current.load();
@@ -220,17 +208,40 @@ const VideoPlayer = () => {
   };
   const openOpacity = Boolean(anchorElOpacity);
 
+  useEffect(() => {
+    setCurrentVideo(url);
+  }, [url]);
+  // if width is not 100% , then change the width to 100%
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.style.width = "100%";
+    }
+  }, [videoRef.current]);
+
   return (
     <Box
       sx={{
         textAlign: "center",
         position: "relative",
         width: "100%",
-        height: "100%",
+        height: "100vh",
         overflow: "hidden",
       }}
       ref={containerRef}
     >
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          backgroundColor: "transparent",
+          zIndex: 3,
+        }}
+      >
+        <IconButton onClick={() => onSelect(null)} sx={{ color: "white" }}>
+          <ArrowBackIcon />
+        </IconButton>
+      </Box>
       <Box
         sx={{
           position: "absolute",
@@ -241,7 +252,6 @@ const VideoPlayer = () => {
           overflow: "hidden",
           width: "100%",
           height: "100%",
-          maxWidth: "600px",
           maxHeight: "auto",
         }}
       >
@@ -254,21 +264,19 @@ const VideoPlayer = () => {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            transform: "scaleX(-1)", // Add this line to flip the camera view
+            transform: "scaleX(-1)",
             zIndex: 0,
             display: cameraEnabled ? "block" : "none",
           }}
           autoPlay
           muted
-          webkit-playsinline="true"
           playsInline
         ></video>
         <animated.div
           style={{
             ...style,
-            opacity: cameraEnabled ? opacity / 100 : 100,
+            opacity: cameraEnabled ? opacity / 100 : 1,
             zIndex: 1,
-            position: "relative",
           }}
         >
           <video
@@ -279,9 +287,9 @@ const VideoPlayer = () => {
               touchAction: "none",
               width: "100%",
               height: "100%",
+              objectFit: "cover",
             }}
             controls={false}
-            webkit-playsinline="true"
             playsInline
           >
             <source src={currentVideo} type="video/mp4" />
@@ -291,18 +299,18 @@ const VideoPlayer = () => {
         <IconButton
           sx={{
             position: "absolute",
-            top: 15, // Adjust top spacing
-            right: 8, // Adjust right spacing
-            zIndex: 3, // Make it appear on top of other elements
-            borderRadius: "50%", // Make it circular
-            color: "white", // Set icon color
-            backgroundColor: "rgba(0, 0, 0, 0.5)", // Add background color
+            top: 15,
+            right: 8,
+            zIndex: 3,
+            borderRadius: "50%",
+            color: "white",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
           }}
           onClick={() => {
             window.location.href = `/score${currentVideo.replace(".mp4", "")}`;
           }}
         >
-          <SportsScoreIcon />{" "}
+          <SportsScoreIcon />
         </IconButton>
         {!isPlaying && (
           <IconButton
@@ -324,7 +332,20 @@ const VideoPlayer = () => {
           </IconButton>
         )}
       </Box>
-      <Box className="fixed bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 flex justify-center items-center space-x-2">
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: "black",
+          backgroundOpacity: 0.5,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 1,
+        }}
+      >
         <IconButton sx={{ color: "white" }} onClick={handlePlayPause}>
           {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
         </IconButton>
@@ -343,9 +364,6 @@ const VideoPlayer = () => {
         </Select>
         <IconButton sx={{ color: "white" }} onClick={handleMirror}>
           <FlipCameraAndroidIcon />
-        </IconButton>
-        <IconButton sx={{ color: "white" }} onClick={handleFullscreen}>
-          {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
         </IconButton>
         <IconButton sx={{ color: "white" }} onClick={handleVideoSwitch}>
           <SwitchVideoIcon />

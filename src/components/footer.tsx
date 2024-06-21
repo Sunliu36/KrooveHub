@@ -15,7 +15,7 @@ export default function Footer() {
     >
       <Container maxWidth="md">
         <Typography variant="body2" component="p">
-          &copy; {new Date().getFullYear()} GrooveHub. All rights reserved.
+          &copy; {new Date().getFullYear()} KrooveHub. All rights reserved.
         </Typography>
         <Typography variant="body2" component="p">
           <Link href="/privacy" color="inherit">
