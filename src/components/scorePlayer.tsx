@@ -244,6 +244,7 @@ const ScorePlayer = () => {
   return (
     <Box
       sx={{
+        mt: 7,
         textAlign: "center",
         position: "relative",
         width: "100%",

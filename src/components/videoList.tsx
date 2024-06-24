@@ -1,14 +1,6 @@
 import React from "react";
 
-import {
-  Box,
-  Grid,
-  Card,
-  CardActionArea,
-  CardContent,
-  Typography,
-  IconButton,
-} from "@mui/material";
+import { Box, Grid, Card, CardActionArea } from "@mui/material";
 
 interface Video {
   title: string;
@@ -65,21 +57,6 @@ const VideoList: React.FC<VideoListProps> = ({ videos, onSelect }) => {
                   muted
                   loop
                 />
-                <CardContent
-                  sx={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    width: "100%",
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    color: "white",
-                    padding: "0.3rem",
-                  }}
-                >
-                  <Typography gutterBottom variant="h6" component="div">
-                    {video.title}
-                  </Typography>
-                </CardContent>
               </CardActionArea>
             </Card>
           </Grid>

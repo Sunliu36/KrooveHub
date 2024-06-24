@@ -93,7 +93,7 @@ export default function VideoPage() {
     <Container
       maxWidth={false}
       sx={{
-        mb: 1,
+        mt: 7,
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
@@ -103,19 +103,15 @@ export default function VideoPage() {
       }}
       onWheel={handleScroll}
     >
-      <Grid container sx={{ width: "100%" }}>
+      <Grid container>
         {selectedVideo ? (
           <Grid item xs={12} sx={{ padding: 0, overflow: "hidden" }}>
-            <Paper
-              elevation={3}
-              ref={containerRef}
-              onMouseLeave={handleMouseLeave}
-            >
+            <Paper ref={containerRef} onMouseLeave={handleMouseLeave}>
               <VideoPlayer url={selectedVideo} onSelect={handleVideoSelect} />
             </Paper>
           </Grid>
         ) : (
-          <Grid item xs={12} sx={{ padding: 0 }}>
+          <Grid item xs={12} sx={{ padding: 0, mb: 7 }}>
             <Paper elevation={3}>
               <VideoList videos={videoData} onSelect={handleVideoSelect} />
             </Paper>

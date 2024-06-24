@@ -285,8 +285,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onSelect }) => {
             style={{
               transformOrigin: "center",
               touchAction: "none",
-              width: "100%",
-              height: "100%",
               objectFit: "cover",
             }}
             controls={false}
@@ -333,13 +331,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onSelect }) => {
         )}
       </Box>
       <Box
+        className="bg-pink-cloud"
         sx={{
           position: "fixed",
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: "black",
-          backgroundOpacity: 0.5,
+          zIndex: 10,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",

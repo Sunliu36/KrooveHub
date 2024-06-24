@@ -78,33 +78,37 @@ export default function ImagesList() {
       });
   }, []);
   return (
-    <div className="justify-center items-center flex flex-col mt-4 w-full">
+    <div className="justify-center items-center flex flex-col mt-4 w-full pt-16 mb-12">
       <div className="flex gap-4 mb-4">
         <Button
           variant="outlined"
           onClick={() => setEventStatus("ongoing")}
           sx={{
-            borderColor: "white",
+            backgroundColor: "white",
+            borderColor: "black",
             "&:hover": {
-              color: "white",
+              color: "black",
+              borderColor: "black",
             },
-            color: "white",
+            color: "black",
           }}
         >
-          表演列表
+          團體列表
         </Button>
         <Button
           variant="outlined"
           onClick={() => setEventStatus("finished")}
           sx={{
-            borderColor: "white",
+            backgroundColor: "white",
+            borderColor: "black",
             "&:hover": {
-              color: "white",
+              color: "black",
+              borderColor: "black",
             },
-            color: "white",
+            color: "black",
           }}
         >
-          您開設的表演
+          您開設的團體
         </Button>
       </div>
       <ImageList variant="masonry" cols={getCols()} gap={10}>
@@ -199,7 +203,7 @@ export default function ImagesList() {
               height: "50px",
             }}
           >
-            添加新課程
+            添加新團體
           </Button>
         )}
       </Box>

@@ -62,7 +62,7 @@ function EventsIdPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center text-dimWhite">
+    <div className="flex min-h-screen flex-col items-center mt-20">
       <div className="flex flex-col items-center justify-center w-full gap-3">
         <h1 className="text-4xl font-bold text-center">{dbEvent.title}</h1>
         <Image src={dbEvent.img} alt={dbEvent.title} width={300} height={300} />
