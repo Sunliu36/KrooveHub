@@ -33,7 +33,7 @@ const aboutInfos = [
   },
 ];
 
-const FindYourGroove = [
+const FindYourKroove = [
   {
     title: "Locate Classes",
     description:
@@ -55,7 +55,6 @@ export default function About() {
   return (
     <div
       style={{
-        background: "linear-gradient(to right, #000000, #1a1a1a, #000000)",
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -90,7 +89,7 @@ export default function About() {
         <Typography variant="body1" paragraph align="center">
           Welcome to KrooveHub, the ultimate platform tailored exclusively for
           dancers! Whether you&apos;re an aspiring performer, a seasoned pro, or
-          someone who simply loves to groove, KrooveHub is designed to be your
+          someone who simply loves to kroove, KrooveHub is designed to be your
           digital stage.
         </Typography>
 
@@ -110,10 +109,10 @@ export default function About() {
 
         <Box my={4}>
           <Typography variant="h4" component="h2" gutterBottom>
-            Find Your Groove
+            Find Your Kroove
           </Typography>
           <List>
-            {FindYourGroove.map((item, index) => (
+            {FindYourKroove.map((item, index) => (
               <ListItem
                 key={index}
                 sx={{
@@ -181,14 +180,11 @@ export default function About() {
           <Typography variant="body1" paragraph>
             KrooveHub is more than just a platform; it&apos;s a movement.
             Whether you&apos;re here to learn, teach, or inspire, our community
-            embraces the love of dance in all its forms. So come groove with
+            embraces the love of dance in all its forms. So come kroove with
             us—download KrooveHub today and start your journey!
           </Typography>
         </Box>
       </Container>
-      <div className="fixed bottom-0 left-0 right-0 z-10 bg-black shadow-md h-15">
-        <Footer />
-      </div>
     </div>
   );
 }

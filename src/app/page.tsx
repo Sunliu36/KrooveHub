@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
+import Link from "next/link";
 
 import { useAuth } from "@clerk/nextjs";
-import Button from "@mui/material/Button";
 
 export default function Home() {
   const { isLoaded, userId } = useAuth();
@@ -14,30 +13,18 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-gradient-to-br from-black via-gray-800 to-gray-600">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex ">
-        <div className="flex flex-col items-center justify-center w-full gap-3">
-          <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
-            Welcome to KrooveHub
-          </h1>
-          <Image
-            src="/favicon.png"
-            alt="KrooveHub Logo"
-            width={200}
-            height={200}
-          />
-          <p className="text-center text-white text-xl">
-            Learn to Dance, Anytime, Anywhere
-          </p>
-          <Button
-            variant="contained"
-            color="primary"
-            href={userId ? "/videos" : "/sign-in"}
-          >
-            {userId ? "Start Dancing" : "Sign In"}
-          </Button>
+    <Link href="/videos" passHref>
+      <main className="flex flex-col min-h-screen ">
+        <div className="flex flex-grow flex-col items-center justify-center z-10 w-full max-w-5xl font-mono text-sm lg:flex">
+          <div className="flex flex-col items-center justify-center w-full gap-3">
+            <h1 className="text-7xl font-bold align-middle mb-60 text-white">
+              KROOVE
+              <br />
+              Hub
+            </h1>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </Link>
   );
 }

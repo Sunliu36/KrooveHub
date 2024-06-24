@@ -3,13 +3,11 @@
 import React, { useRef, useState, useEffect } from "react";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import FlipCameraAndroidIcon from "@mui/icons-material/FlipCameraAndroid";
-import FullscreenIcon from "@mui/icons-material/Fullscreen";
-import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import OpacityIcon from "@mui/icons-material/Opacity";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import UndoIcon from "@mui/icons-material/Undo";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import {
   Box,
@@ -32,7 +30,6 @@ const VideoPlayer: React.FC = () => {
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [isMirrored, setIsMirrored] = useState<boolean>(false);
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [currentVideo, setCurrentVideo] = useState<string>("");
   const [overlayVideo, setOverlayVideo] = useState<string>("");
   const [currentVideoFileName, setCurrentVideoFileName] = useState("");
@@ -115,25 +112,6 @@ const VideoPlayer: React.FC = () => {
   const handleMirror = () => {
     setIsMirrored((prev) => !prev);
     api.start({ scaleX: isMirrored ? 1 : -1 });
-  };
-
-  const handleFullscreen = () => {
-    if (!isFullscreen) {
-      if (containerRef.current) {
-        const elem = containerRef.current;
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        }
-        setIsFullscreen(true);
-        // Reset zoom and drag when entering fullscreen
-        api.start({ scale: 1, x: 0, y: 0 });
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-      setIsFullscreen(false);
-    }
   };
 
   const handleUploadVideo = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -243,6 +221,18 @@ const VideoPlayer: React.FC = () => {
       }}
       ref={containerRef}
     >
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 3,
+        }}
+      >
+        <IconButton onClick={handleToggle} sx={{ color: "white" }}>
+          <ArrowBackIcon />
+        </IconButton>
+      </Box>
       {(!currentVideo || !overlayVideo || showUpload) && (
         <Box
           sx={{
@@ -256,7 +246,6 @@ const VideoPlayer: React.FC = () => {
             left: 0,
             width: "100%",
             zIndex: 2,
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
             padding: "1rem",
             textAlign: "center",
           }}
@@ -376,32 +365,69 @@ const VideoPlayer: React.FC = () => {
               </Typography>
             </Box>
           </Box>
-          <Button
-            variant="contained"
+          <Box
             sx={{
-              backgroundColor: "white",
-              color: "black",
-              fontWeight: "bold",
-              width: "150px",
-              height: "50px",
-              borderRadius: "25px",
-              marginTop: "2rem",
-              "&:hover": {
-                backgroundColor: "black",
-                color: "white",
-                border: "1px solid white",
-              },
-              "&:disabled": {
-                backgroundColor: "gray",
-                color: "white",
-                cursor: "not-allowed",
-              },
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              gap: "2rem",
+              alignItems: "center",
+              width: "100%",
             }}
-            onClick={handleToggle}
-            disabled={!currentVideo || !overlayVideo}
           >
-            Let&apos;s Go!
-          </Button>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "white",
+                color: "black",
+                fontWeight: "bold",
+                width: "150px",
+                height: "50px",
+                borderRadius: "25px",
+                marginTop: "2rem",
+                "&:hover": {
+                  backgroundColor: "black",
+                  color: "white",
+                  border: "1px solid white",
+                },
+                "&:disabled": {
+                  backgroundColor: "gray",
+                  color: "white",
+                  cursor: "not-allowed",
+                },
+              }}
+              onClick={handleToggle}
+              disabled={!currentVideo || !overlayVideo}
+            >
+              上下
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "white",
+                color: "black",
+                fontWeight: "bold",
+                width: "150px",
+                height: "50px",
+                borderRadius: "25px",
+                marginTop: "2rem",
+                "&:hover": {
+                  backgroundColor: "black",
+                  color: "white",
+                  border: "1px solid white",
+                },
+                "&:disabled": {
+                  backgroundColor: "gray",
+                  color: "white",
+                  cursor: "not-allowed",
+                },
+              }}
+              onClick={handleToggle}
+              disabled={!currentVideo || !overlayVideo}
+            >
+              疊影
+            </Button>
+          </Box>
         </Box>
       )}
 
@@ -467,6 +493,105 @@ const VideoPlayer: React.FC = () => {
                 Your browser does not support the video tag.
               </video>
             </animated.div>
+
+            <Box className="fixed bottom-0 left-0 right-0 bg-pink-cloud p-2 flex justify-center items-center space-x-2">
+              <IconButton sx={{ color: "white" }} onClick={handlePlayPause}>
+                {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
+              </IconButton>
+              <Select
+                value={playbackRate}
+                onChange={handleSpeedChange}
+                displayEmpty
+                inputProps={{ "aria-label": "Speed" }}
+                sx={{ color: "white" }}
+              >
+                <MenuItem value={0.25}>0.25x</MenuItem>
+                <MenuItem value={0.5}>0.5x</MenuItem>
+                <MenuItem value={0.75}>0.75x</MenuItem>
+                <MenuItem value={1}>1x</MenuItem>
+                <MenuItem value={1.2}>1.2x</MenuItem>
+              </Select>
+              <IconButton sx={{ color: "white" }} onClick={handleMirror}>
+                <FlipCameraAndroidIcon />
+              </IconButton>
+              <IconButton
+                sx={{ color: "white" }}
+                onClick={handlePopoverOpenOpacity}
+              >
+                <OpacityIcon />
+              </IconButton>
+              <IconButton
+                sx={{ color: "white" }}
+                onClick={handlePopoverOpenTime}
+              >
+                <AccessTimeIcon />
+              </IconButton>
+            </Box>
+            <Popover
+              open={openOpacity}
+              anchorEl={anchorElOpacity}
+              onClose={handlePopoverCloseOpacity}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+            >
+              <Box p={2}>
+                <Typography variant="h6" gutterBottom>
+                  Opacity
+                </Typography>
+                <Slider
+                  value={opacity}
+                  onChange={handleOpacityChange}
+                  aria-labelledby="opacity-slider"
+                  min={0}
+                  max={100}
+                  sx={{ width: 150, color: "gray" }}
+                />
+              </Box>
+            </Popover>
+            <Popover
+              open={openTime}
+              anchorEl={anchorElTime}
+              onClose={handlePopoverCloseTime}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+            >
+              <Box p={2}>
+                <Typography variant="h6" gutterBottom>
+                  Template
+                </Typography>
+                <Slider
+                  value={currentTime1}
+                  onChange={handleTimeChange1}
+                  aria-labelledby="time-slider1"
+                  min={0}
+                  max={duration1}
+                  sx={{ width: 150, color: "gray" }}
+                />
+                <Typography variant="h6" gutterBottom>
+                  Own Video
+                </Typography>
+                <Slider
+                  value={currentTime2}
+                  onChange={handleTimeChange2}
+                  aria-labelledby="time-slider2"
+                  min={0}
+                  max={duration2}
+                  sx={{ width: 150, color: "gray" }}
+                />
+              </Box>
+            </Popover>
           </>
         )}
         {!isPlaying && (
@@ -489,104 +614,6 @@ const VideoPlayer: React.FC = () => {
           </IconButton>
         )}
       </Box>
-      <Box className="fixed bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 flex justify-center items-center space-x-2">
-        <IconButton sx={{ color: "white" }} onClick={handlePlayPause}>
-          {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-        </IconButton>
-        <Select
-          value={playbackRate}
-          onChange={handleSpeedChange}
-          displayEmpty
-          inputProps={{ "aria-label": "Speed" }}
-          sx={{ color: "white" }}
-        >
-          <MenuItem value={0.25}>0.25x</MenuItem>
-          <MenuItem value={0.5}>0.5x</MenuItem>
-          <MenuItem value={0.75}>0.75x</MenuItem>
-          <MenuItem value={1}>1x</MenuItem>
-          <MenuItem value={1.2}>1.2x</MenuItem>
-        </Select>
-        <IconButton sx={{ color: "white" }} onClick={handleMirror}>
-          <FlipCameraAndroidIcon />
-        </IconButton>
-        <IconButton sx={{ color: "white" }} onClick={handleFullscreen}>
-          {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-        </IconButton>
-        <IconButton sx={{ color: "white" }} onClick={handlePopoverOpenOpacity}>
-          <OpacityIcon />
-        </IconButton>
-        <IconButton sx={{ color: "white" }} onClick={handlePopoverOpenTime}>
-          <AccessTimeIcon />
-        </IconButton>
-        <IconButton sx={{ color: "white" }} onClick={handleToggle}>
-          <UndoIcon />
-        </IconButton>
-      </Box>
-      <Popover
-        open={openOpacity}
-        anchorEl={anchorElOpacity}
-        onClose={handlePopoverCloseOpacity}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-        transformOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-      >
-        <Box p={2}>
-          <Typography variant="h6" gutterBottom>
-            Opacity
-          </Typography>
-          <Slider
-            value={opacity}
-            onChange={handleOpacityChange}
-            aria-labelledby="opacity-slider"
-            min={0}
-            max={100}
-            sx={{ width: 150, color: "gray" }}
-          />
-        </Box>
-      </Popover>
-      <Popover
-        open={openTime}
-        anchorEl={anchorElTime}
-        onClose={handlePopoverCloseTime}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-        transformOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-      >
-        <Box p={2}>
-          <Typography variant="h6" gutterBottom>
-            Template
-          </Typography>
-          <Slider
-            value={currentTime1}
-            onChange={handleTimeChange1}
-            aria-labelledby="time-slider1"
-            min={0}
-            max={duration1}
-            sx={{ width: 150, color: "gray" }}
-          />
-          <Typography variant="h6" gutterBottom>
-            Own Video
-          </Typography>
-          <Slider
-            value={currentTime2}
-            onChange={handleTimeChange2}
-            aria-labelledby="time-slider2"
-            min={0}
-            max={duration2}
-            sx={{ width: 150, color: "gray" }}
-          />
-        </Box>
-      </Popover>
     </Box>
   );
 };
