@@ -1,16 +1,22 @@
+"use client";
+
 import React from "react";
+
+import { useParams } from "next/navigation";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Container, Box, Link, IconButton } from "@mui/material";
 
-import ScorePlayer from "@/components/scorePlayer";
+import VideoPlayer from "@/components/videosPlayer";
 
 export default function ComingSoon() {
+  const { video } = useParams();
+  console.log(video);
   return (
     <Container
       maxWidth="sm"
       sx={{
-        mb: 1,
+        mt: 10,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -18,7 +24,7 @@ export default function ComingSoon() {
         height: "100vh",
       }}
     >
-      <ScorePlayer />
+      <VideoPlayer url={`/${video}.mp4`} />
       <Box
         sx={{
           position: "absolute",

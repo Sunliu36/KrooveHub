@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+import PersonIcon from "@mui/icons-material/Person";
 import {
   useMediaQuery,
   useTheme,
@@ -25,6 +26,8 @@ import {
 interface ClassType {
   title: string;
   author: string;
+  group: string;
+  song: string;
   img: string;
   stage: string;
   people: number;
@@ -87,8 +90,8 @@ export default function ImagesList() {
             backgroundColor: "white",
             borderColor: "black",
             "&:hover": {
-              color: "black",
-              borderColor: "black",
+              color: "white",
+              borderColor: "white",
             },
             color: "black",
           }}
@@ -102,8 +105,8 @@ export default function ImagesList() {
             backgroundColor: "white",
             borderColor: "black",
             "&:hover": {
-              color: "black",
-              borderColor: "black",
+              color: "white",
+              borderColor: "white",
             },
             color: "black",
           }}
@@ -117,7 +120,7 @@ export default function ImagesList() {
             eventStatus === "ongoing" ? item.isOngoing : !item.isOngoing,
           )
           .map((item) => (
-            <Link key={item.img} href={`/groups/${item.eventId}`}>
+            <Link key={item.title} href={`/groups/${item.eventId}`}>
               <ImageListItem>
                 <div className="group rounded-3xl overflow-hidden relative">
                   <div
@@ -143,46 +146,47 @@ export default function ImagesList() {
                       }}
                     >
                       <Typography variant="subtitle1">
-                        {item.title} x {item.author}
+                        {item.group} - {item.song}
                       </Typography>
                     </Box>
                   </div>
                 </div>
                 <ImageListItemBar
-                  title={item.title}
-                  subtitle={item.author}
+                  title={`${item.title} x ${item.author}`}
                   position="below"
                   sx={{
                     marginLeft: 2,
+                    color: "gray",
                   }}
                   actionIcon={
                     <>
                       <Chip
                         label={item.stage}
                         sx={
-                          item.stage === "easy"
+                          item.stage === "Beginner"
                             ? {
-                                backgroundColor: "green",
+                                backgroundColor: "#5AA2D6",
                                 color: "white",
                               }
-                            : item.stage === "intermediate"
+                            : item.stage === "Intermediate"
                               ? {
-                                  backgroundColor: "yellow",
-                                  color: "black",
+                                  backgroundColor: "#CB5AD6",
+                                  color: "white",
                                 }
                               : {
-                                  backgroundColor: "red",
+                                  backgroundColor: "#CB8736",
                                   color: "white",
                                 }
                         }
                         size="small" // Optional: Adjust size based on your preferences
-                        className="mr-2 mt-4"
+                        className="mr-2 mt-2"
                       />
                       <Chip
-                        label={`${item.people} people`}
-                        color="primary" // Optional: Adjust color based on your theme
-                        size="small" // Optional: Adjust size based on your preferences
-                        className="mr-2 mt-4"
+                        icon={<PersonIcon />} // Add the icon here
+                        label={`${item.people}`}
+                        sx={{ backgroundColor: "gray", color: "white" }}
+                        size="small"
+                        className="mr-2 mt-2"
                       />
                     </>
                   }

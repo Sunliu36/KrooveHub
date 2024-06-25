@@ -2,7 +2,6 @@
 
 import React, { useRef, useState, useEffect } from "react";
 
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CameraIcon from "@mui/icons-material/Camera";
 import FlipCameraAndroidIcon from "@mui/icons-material/FlipCameraAndroid";
 import PauseIcon from "@mui/icons-material/Pause";
@@ -25,10 +24,9 @@ import { useGesture } from "@use-gesture/react";
 
 interface VideoPlayerProps {
   url: string;
-  onSelect: (url: string | null) => void;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onSelect }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const cameraRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -229,19 +227,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onSelect }) => {
       }}
       ref={containerRef}
     >
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          backgroundColor: "transparent",
-          zIndex: 3,
-        }}
-      >
-        <IconButton onClick={() => onSelect(null)} sx={{ color: "white" }}>
-          <ArrowBackIcon />
-        </IconButton>
-      </Box>
       <Box
         sx={{
           position: "absolute",

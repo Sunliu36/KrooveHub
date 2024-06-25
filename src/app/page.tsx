@@ -13,7 +13,7 @@ export default function Home() {
   }
 
   return (
-    <Link href="/videos" passHref>
+    <Link href={!userId ? "/sign-in" : "/videos"} passHref>
       <main className="flex flex-col min-h-screen ">
         <div className="flex flex-grow flex-col items-center justify-center z-10 w-full max-w-5xl font-mono text-sm lg:flex">
           <div className="flex flex-col items-center justify-center w-full gap-3">

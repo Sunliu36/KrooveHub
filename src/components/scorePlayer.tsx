@@ -44,8 +44,6 @@ const ScorePlayer = () => {
   const [anchorElOpacity, setAnchorElOpacity] = useState<HTMLElement | null>(
     null,
   );
-  const [maskPhotoUrl, setMaskPhotoUrl] = useState<string | null>(null);
-  const [maskPhoto2Url, setMaskPhoto2Url] = useState<string | null>(null);
 
   const loadBodyPixModel = async () => {
     const net = await bodyPix.load();
@@ -203,11 +201,6 @@ const ScorePlayer = () => {
     const webcamMask = bodyPix.toMask(webcamSegmentation);
     const score = compareMasks(videoMask, webcamMask);
     setScores((prevScores) => [...prevScores, score]);
-
-    const videoMaskUrl = maskToImageUrl(videoMask);
-    const webcamMaskUrl = maskToImageUrl(webcamMask);
-    setMaskPhotoUrl(videoMaskUrl);
-    setMaskPhoto2Url(webcamMaskUrl);
   };
 
   const handleUploadVideo = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -318,11 +311,13 @@ const ScorePlayer = () => {
               borderRadius: "20%",
               transform: "translate(-50%, -50%)",
               zIndex: 2,
-              backgroundColor: "red",
+              backgroundColor: "gray",
+              opacity: 0.8,
               color: "white",
               padding: "10px",
               "&:hover": {
-                backgroundColor: "green",
+                backgroundColor: "gray",
+                opacity: 0.8,
               },
             }}
           >
@@ -334,7 +329,7 @@ const ScorePlayer = () => {
           </IconButton>
         )}
       </Box>
-      <Box className="fixed bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 flex justify-center items-center space-x-2">
+      <Box className="fixed bottom-0 left-0 right-0 bg-black z-10 p-2 flex justify-center items-center space-x-2">
         <IconButton sx={{ color: "white" }} onClick={handlePlayPause}>
           {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
         </IconButton>
@@ -384,11 +379,11 @@ const ScorePlayer = () => {
           </Box>
         </Popover>
       </Box>
-      <Box sx={{ mt: 2, color: "white" }}>
+      <Box sx={{ mt: 4, color: "white" }}>
         <Button
           variant="contained"
-          color="primary"
           onClick={handleCompareMasks}
+          sx={{ backgroundColor: "#EF42B4" }}
         >
           Average Score: {averageScore.toFixed(2)}
         </Button>

@@ -8,8 +8,15 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "pink-cloud": "url('/bg.png')",
+      // backgroundImage: {
+      //   "black": "black",
+      // },
+      colors: {
+        advanced: "#CB8736",
+        beginner: "#CB5AD6",
+        intermediate: "#5AA2D6",
+        purple1: "#EF42B4",
+        gray1: "#8E91A5",
       },
     },
   },

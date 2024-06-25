@@ -494,7 +494,7 @@ const VideoPlayer: React.FC = () => {
               </video>
             </animated.div>
 
-            <Box className="fixed bottom-0 left-0 right-0 bg-pink-cloud p-2 flex justify-center items-center space-x-2">
+            <Box className="fixed bottom-0 left-0 right-0 bg-black p-2 flex justify-center items-center space-x-2">
               <IconButton sx={{ color: "white" }} onClick={handlePlayPause}>
                 {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
               </IconButton>

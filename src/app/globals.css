@@ -18,7 +18,8 @@
 
 html,
 body {
-  background-image: url("/bg.png");
+  color: white;
+  background-color: black;
 }
 
 @layer utilities {

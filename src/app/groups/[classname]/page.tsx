@@ -3,9 +3,13 @@
 import { useEffect, useState } from "react";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PersonIcon from "@mui/icons-material/Person";
+import { Box, Typography } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 
 import WhenToMeet from "./whentomeet";
 
@@ -17,6 +21,8 @@ interface Person {
 interface Event {
   img: string;
   title: string;
+  group: string;
+  song: string;
   description: string;
   people: Person[];
 }
@@ -42,40 +48,80 @@ function EventsIdPage() {
   }
 
   const renderPeople = () => {
-    const peopleChunks = [];
-    for (let i = 0; i < dbEvent.people.length; i += 6) {
-      peopleChunks.push(dbEvent.people.slice(i, i + 6));
-    }
-
-    return peopleChunks.map((chunk, chunkIndex) => (
-      <div key={chunkIndex} className="grid grid-cols-3 gap-4 w-full">
-        {chunk.map((person, index) => (
-          <div key={index} className="flex flex-col items-center gap-2">
+    return (
+      <div className="flex flex-wrap gap-2 justify-center">
+        {dbEvent.people.map((person, personIndex) => (
+          <div
+            key={personIndex}
+            className={`flex flex-col items-center ${personIndex % 2 === 1 ? "mt-16" : "mt-0"}`}
+          >
             <PersonIcon
-              style={{ color: person.state ? "green" : "red", fontSize: 40 }}
+              style={{
+                color: person.state ? "#EF42B4" : "#8E91A5",
+                fontSize: 40,
+              }}
             />
             <span>{person.name}</span>
           </div>
         ))}
       </div>
-    ));
+    );
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center mt-20">
+    <div className="flex min-h-screen flex-col items-center mt-24">
       <div className="flex flex-col items-center justify-center w-full gap-3">
-        <h1 className="text-4xl font-bold text-center">{dbEvent.title}</h1>
-        <Image src={dbEvent.img} alt={dbEvent.title} width={300} height={300} />
-        <p className="text-center">{dbEvent.description}</p>
-        <div className="flex items-center gap-2">
-          <span
-            className={"inline-block w-4 h-4 rounded-full bg-red-500"}
-          ></span>
-          <span>Not Open</span>
-          <span
-            className={"inline-block w-4 h-4 rounded-full bg-green-500"}
-          ></span>
-          <span>Available</span>
+        <Box
+          sx={{
+            position: "absolute",
+            top: 80,
+            left: 10,
+            backgroundColor: "transparent",
+            zIndex: 3,
+          }}
+        >
+          <Link href="/groups">
+            <IconButton sx={{ color: "white" }}>
+              <ArrowBackIcon />
+            </IconButton>
+          </Link>
+        </Box>
+        <div className="group rounded-3xl overflow-hidden relative">
+          <div style={{ width: 300, height: 160, position: "relative" }}>
+            <Image
+              width={300}
+              height={160}
+              src={dbEvent.img}
+              alt={dbEvent.title}
+              loading="lazy"
+              className="rounded-3xl p-0"
+            />
+            <Box
+              sx={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                width: "100%",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                color: "white",
+                padding: "8px",
+              }}
+            >
+              <Typography variant="subtitle1">
+                {dbEvent.group} - {dbEvent.song}
+              </Typography>
+            </Box>
+          </div>
+        </div>
+        <div className="flex justify-center gap-8">
+          <div className="flex items-center gap-2">
+            <span className="inline-block w-4 h-4 rounded-full bg-purple1"></span>
+            <span>Not Open</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="inline-block w-4 h-4 rounded-full bg-gray1"></span>
+            <span>Available</span>
+          </div>
         </div>
         <div className="flex flex-col items-center gap-2">{renderPeople()}</div>
         <WhenToMeet classname={dbEvent.title} />
