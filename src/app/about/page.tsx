@@ -13,8 +13,6 @@ import {
   ListItemText,
 } from "@mui/material";
 
-import Footer from "@/components/footer";
-
 const aboutInfos = [
   {
     title: "Exclusively for Dancers",

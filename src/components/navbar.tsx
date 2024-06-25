@@ -2,7 +2,6 @@
 
 import * as React from "react";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 // import Menu from "@mui/material/Menu";
@@ -39,7 +38,7 @@ function NavBar() {
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-10 bg-pink-cloud">
+    <div className="fixed top-0 left-0 right-0 z-10 bg-black">
       <AppBar position="static" sx={{ background: "transparent" }}>
         <Container maxWidth={false}>
           <Toolbar disableGutters>
@@ -65,6 +64,7 @@ function NavBar() {
               href="/main"
               sx={{
                 margin: "8px",
+                marginTop: "20px",
                 display: { xs: "flex", md: "none" },
                 flexGrow: 1,
                 fontFamily: "monospace",
