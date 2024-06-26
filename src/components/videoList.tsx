@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useRouter } from "next/navigation";
+
 import { Box, Grid, Card, CardActionArea } from "@mui/material";
 
 interface Video {
@@ -9,10 +11,15 @@ interface Video {
 
 interface VideoListProps {
   videos: Video[];
-  onSelect: (url: string | null) => void;
 }
 
-const VideoList: React.FC<VideoListProps> = ({ videos, onSelect }) => {
+const VideoList: React.FC<VideoListProps> = ({ videos }) => {
+  const router = useRouter();
+
+  const handleCardClick = (videoUrl: string) => {
+    const videoURL = videoUrl.replace(".mp4", "");
+    router.push(`/videos/${videoURL}`);
+  };
   return (
     <Box>
       <Grid container>
@@ -32,12 +39,12 @@ const VideoList: React.FC<VideoListProps> = ({ videos, onSelect }) => {
             <Card
               sx={{
                 width: "100%",
-                paddingBottom: "100%", // For square aspect ratio
+                paddingBottom: "150%", // For square aspect ratio
                 position: "relative",
               }}
             >
               <CardActionArea
-                onClick={() => onSelect(video.url)}
+                onClick={() => handleCardClick(video.url)}
                 sx={{
                   position: "absolute",
                   top: 0,

@@ -10,7 +10,7 @@ import { usersTable } from "@/db/schema";
 const defaultItemData = [
   {
     img: "/kpop1.png",
-    title: "Kpoppp",
+    title: "Kpopopop",
     url: "/sample-video5.mp4",
     group: "Blackpink",
     song: "SHUT DOWN",
@@ -19,7 +19,7 @@ const defaultItemData = [
     userSessionId: "123",
     isOngoing: true,
     stage: "Intermediate",
-    people: 10,
+    people: 5,
     eventId: "event1",
   },
   {

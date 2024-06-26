@@ -46,7 +46,7 @@ function NavBar() {
               variant="h6"
               noWrap
               component="a"
-              href="/main"
+              href="/videos"
               sx={{
                 display: { xs: "none", md: "flex" },
                 fontFamily: "monospace",
@@ -61,7 +61,7 @@ function NavBar() {
               variant="h6"
               noWrap
               component="a"
-              href="/main"
+              href="/videos"
               sx={{
                 margin: "8px",
                 marginTop: "20px",

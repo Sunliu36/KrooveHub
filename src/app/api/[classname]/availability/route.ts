@@ -21,8 +21,6 @@ export async function GET(
     };
   },
 ) {
-  const { classname } = params;
-  console.log(classname);
   // Validate the URL parameters
 
   const availability = {

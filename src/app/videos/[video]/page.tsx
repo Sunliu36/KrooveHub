@@ -11,7 +11,6 @@ import VideoPlayer from "@/components/videosPlayer";
 
 export default function ComingSoon() {
   const { video } = useParams();
-  console.log(video);
   return (
     <Container
       maxWidth="sm"
