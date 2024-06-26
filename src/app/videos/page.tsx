@@ -43,7 +43,6 @@ const ImagesList: React.FC = () => {
     fetch("/api/class")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (data.length > 0) {
           setItemData(data);
         }

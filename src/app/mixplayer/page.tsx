@@ -397,9 +397,9 @@ const VideoPlayer: React.FC = () => {
                 },
               }}
               onClick={handleToggle}
-              disabled={!currentVideo || !overlayVideo}
+              disabled={true}
             >
-              上下
+              Coming soon
             </Button>
             <Button
               variant="contained"

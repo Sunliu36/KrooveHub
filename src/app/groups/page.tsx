@@ -73,7 +73,6 @@ export default function ImagesList() {
     fetch("/api/class")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (data.length > 0) setItemData(data);
       })
       .catch((error) => {

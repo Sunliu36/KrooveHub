@@ -222,7 +222,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onSelect }) => {
     <Box
       sx={{
         textAlign: "center",
-        position: "relative",
+        position: "absolute",
         width: "100%",
         height: "100vh",
         overflow: "hidden",

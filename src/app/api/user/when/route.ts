@@ -22,7 +22,6 @@ export async function POST(req: NextRequest) {
   const user = await currentUser();
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  console.log(user.id);
   try {
     //find userSessionId in the database if not found create a new user yes update the lastLoginAt
     const dbUser = await db.query.usersTable.findFirst({
@@ -68,7 +67,6 @@ export async function GET(req: NextRequest) {
   const user = await currentUser();
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  console.log(user.id);
   try {
     //find userSessionId in the database if not found create a new user yes update the lastLoginAt
     const dbUser = await db.query.usersTable.findFirst({

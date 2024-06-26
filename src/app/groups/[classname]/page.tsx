@@ -7,9 +7,10 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import PersonIcon from "@mui/icons-material/Person";
 import { Box, Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
+
+import RenderPeople from "@/components/renderPeople";
 
 import WhenToMeet from "./whentomeet";
 
@@ -46,27 +47,6 @@ function EventsIdPage() {
   if (!dbEvent) {
     return <div>Loading...</div>; // Show a loading state until the data is fetched
   }
-
-  const renderPeople = () => {
-    return (
-      <div className="flex flex-wrap gap-2 justify-center">
-        {dbEvent.people.map((person, personIndex) => (
-          <div
-            key={personIndex}
-            className={`flex flex-col items-center ${personIndex % 2 === 1 ? "mt-16" : "mt-0"}`}
-          >
-            <PersonIcon
-              style={{
-                color: person.state ? "#EF42B4" : "#8E91A5",
-                fontSize: 40,
-              }}
-            />
-            <span>{person.name}</span>
-          </div>
-        ))}
-      </div>
-    );
-  };
 
   return (
     <div className="flex min-h-screen flex-col items-center mt-24">
@@ -123,7 +103,9 @@ function EventsIdPage() {
             <span>Available</span>
           </div>
         </div>
-        <div className="flex flex-col items-center gap-2">{renderPeople()}</div>
+        <div className="flex flex-col items-center gap-2">
+          <RenderPeople people={dbEvent.people} />
+        </div>
         <WhenToMeet classname={dbEvent.title} />
       </div>
     </div>

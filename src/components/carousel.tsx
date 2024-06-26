@@ -48,7 +48,7 @@ const Carousel: React.FC<CarouselProps> = ({ data }) => {
           className="w-full h-full absolute flex transition-all duration-300"
         >
           {data.map((item) => (
-            <div key={item.img} className="relative shrink-0 w-full h-full">
+            <div key={item.title} className="relative shrink-0 w-full h-full">
               <ImageListItem>
                 <div className="group rounded-3xl overflow-hidden relative">
                   <div

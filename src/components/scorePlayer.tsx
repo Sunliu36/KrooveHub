@@ -181,7 +181,6 @@ const ScorePlayer = () => {
 
     const scale = webcamRect.height / webcamVideoHeight;
     const offsetX = (webcamVideoWidth * scale - webcamRect.width) / 2;
-    console.log("Offset X:", offsetX);
 
     webcamCtx?.scale(-scale, scale);
     webcamCtx?.translate(-webcamVideoWidth + offsetX / scale, 0);

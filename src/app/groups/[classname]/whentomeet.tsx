@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { Typography, CircularProgress, Button, Box } from "@mui/material";
+import { CircularProgress, Button, Box } from "@mui/material";
 
 interface AvailabilityType {
   [dayIndex: number]: {

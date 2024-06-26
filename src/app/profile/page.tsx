@@ -1,39 +1,27 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 import Image from "next/image";
 
 import { useUser } from "@clerk/nextjs";
-import BackIcon from "@mui/icons-material/ArrowBack";
-import FlipIcon from "@mui/icons-material/Flip";
-import OpacityIcon from "@mui/icons-material/Opacity";
-import PauseIcon from "@mui/icons-material/Pause";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import SwitchVideoIcon from "@mui/icons-material/SwitchVideo";
-import TimerIcon from "@mui/icons-material/Timer";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
+import PersonIcon from "@mui/icons-material/Person";
 import {
   Container,
   Typography,
   Box,
   Avatar,
-  Button,
   Grid,
-  Tabs,
   Tab,
-  Dialog,
-  DialogContent,
-  TextField,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  IconButton,
-  Slider,
+  Button,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
+  Chip,
+  Link,
 } from "@mui/material";
-import { useMediaQuery } from "@mui/material";
-import { useSpring, animated } from "@react-spring/web";
+
+import VideoSquare from "@/components/videoSquare";
 
 interface JoinedClass {
   id: number;
@@ -98,122 +86,35 @@ const userProfile: UserProfile = {
   ],
 };
 
+interface ClassType {
+  title: string;
+  author: string;
+  group: string;
+  song: string;
+  img: string;
+  stage: string;
+  people: number;
+  isOngoing: boolean;
+  eventId: string;
+}
+
 const Profile: React.FC = () => {
-  const { isLoaded, isSignedIn, user } = useUser();
-  const [tabValue, setTabValue] = useState("videos");
-  const [openDialog, setOpenDialog] = useState(false);
-  const [dialogContent, setDialogContent] = useState<{
-    url: string;
-    description: string;
-    template?: string;
-  } | null>(null);
-  const [comments, setComments] = useState<string[]>([]);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [videoOverlap, setVideoOverlap] = useState<boolean>(false);
-  const [overlapUrl, setOverlapUrl] = useState<string | null>(null);
-  const [opacity, setOpacity] = useState<number>(20);
-  const [isMirrored, setIsMirrored] = useState<boolean>(false);
-  const [currentTime, setCurrentTime] = useState<number>(0);
-  const [overlapTime, setOverlapTime] = useState<number>(0);
-  const [showOpacitySlider, setShowOpacitySlider] = useState<boolean>(false);
-  const [showTimeSlider, setShowTimeSlider] = useState<boolean>(false);
-  const [style, api] = useSpring(() => ({
-    scale: 1,
-    x: 0,
-    y: 0,
-    scaleX: 1,
-  }));
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const overlapVideoRef = useRef<HTMLVideoElement>(null);
+  const { user } = useUser();
+  const [view, setView] = useState("videos");
+  const [itemData, setItemData] = useState<ClassType[]>([]);
 
-  const isMobile = useMediaQuery("(max-width:600px)");
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-    setTabValue(newValue);
-  };
-
-  const handleOpenDialog = (content: {
-    url: string;
-    description: string;
-    template?: string;
-  }) => {
-    setDialogContent(content);
-    setOpenDialog(true);
-    setIsPlaying(false);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setDialogContent(null);
-    setComments([]);
-    setVideoOverlap(false);
-    setOverlapUrl(null);
-    setShowOpacitySlider(false);
-    setShowTimeSlider(false);
-  };
-
-  const handleAddComment = () => {
-    const commentInput = document.getElementById("comment") as HTMLInputElement;
-    if (commentInput) {
-      const commentValue = commentInput.value;
-      setComments((prevComments) => [...prevComments, commentValue]);
-      commentInput.value = ""; // Clear the input after adding the comment
-    }
-  };
-
-  const togglePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-        if (overlapVideoRef.current) {
-          overlapVideoRef.current.pause();
-        }
-      } else {
-        videoRef.current.play();
-        if (overlapVideoRef.current) {
-          overlapVideoRef.current.play();
-        }
-      }
-      setIsPlaying((prev) => !prev);
-    }
-  };
-
-  const handleVideoOverlap = (url: string) => {
-    if (!url) return;
-    if (videoOverlap) {
-      setOverlapUrl(null);
-      setVideoOverlap(false);
-    } else {
-      setOverlapUrl(url);
-      setVideoOverlap(true);
-    }
-  };
-
-  const handleMirror = () => {
-    setIsMirrored((prev) => !prev);
-    api.start({ scaleX: isMirrored ? 1 : -1 });
-  };
-
-  const handleOpacityChange = (event: Event, newValue: number | number[]) => {
-    setOpacity(newValue as number);
-  };
-
-  const handleTimeChange = (event: Event, newValue: number | number[]) => {
-    setCurrentTime(newValue as number);
-    if (videoRef.current) {
-      videoRef.current.currentTime = newValue as number;
-    }
-  };
-
-  const handleOverlapTimeChange = (
-    event: Event,
-    newValue: number | number[],
-  ) => {
-    setOverlapTime(newValue as number);
-    if (overlapVideoRef.current) {
-      overlapVideoRef.current.currentTime = newValue as number;
-    }
-  };
+  useEffect(() => {
+    // Fetch data from API
+    // setItemData(data);
+    fetch("/api/class")
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.length > 0) setItemData(data);
+      })
+      .catch((error) => {
+        console.error("Failed to load class data", error);
+      });
+  }, []);
 
   return (
     <Box
@@ -223,495 +124,215 @@ const Profile: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        py: 4,
+        mt: 10,
       }}
     >
       <Container
         maxWidth="md"
         sx={{
-          backgroundColor: "background.paper",
-          borderRadius: 1,
+          background: "black",
+          borderRadius: 2,
           boxShadow: 3,
           padding: 4,
           marginTop: 4,
+          position: "relative",
         }}
       >
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
-            flexDirection: isMobile ? "column" : "row",
+            position: "absolute",
+            top: -50, // Adjust this value as needed
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 0,
+            width: "100%",
+            height: 200, // Adjust this value as needed
+            overflow: "hidden",
+            borderRadius: 1,
           }}
         >
-          <Avatar
-            sx={{
-              width: 120,
-              height: 120,
-              mr: isMobile ? 0 : 3,
-              mb: isMobile ? 2 : 0,
-            }}
-          >
-            <Image
-              src={user?.imageUrl || userProfile.photo}
-              alt={
-                user?.fullName ||
-                `${user?.firstName} ${user?.lastName}` ||
-                userProfile.name
-              }
-              width={120}
-              height={120}
-              style={{ borderRadius: "50%" }}
-            />
-          </Avatar>
-          <Box
-            sx={{
-              textAlign: "left",
-              textAlignLast: isMobile ? "center" : "left",
-            }}
-          >
-            <Typography
-              variant={isMobile ? "h5" : "h4"}
-              component="h1"
-              sx={{ color: "black", mr: isMobile ? 0 : 2 }}
-              gutterBottom
-            >
-              {user?.fullName ||
-                `${user?.firstName} ${user?.lastName}` ||
-                userProfile.name}
-            </Typography>
-            <Typography
-              variant={isMobile ? "subtitle1" : "h6"}
-              component="div"
-              sx={{ color: "gray" }}
-              gutterBottom
-            >
-              {userProfile.handle}
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{ color: "black", mt: isMobile ? 1 : 0 }}
-              paragraph
-            >
-              {userProfile.description}
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                gap: 2,
-                mt: 1,
-                justifyContent: isMobile ? "center" : "flex-start",
-              }}
-            >
-              <Typography variant="body2" sx={{ color: "black" }}>
-                <strong>{userProfile.followers}</strong> Followers
-              </Typography>
-              <Typography variant="body2" sx={{ color: "black" }}>
-                <strong>{userProfile.following}</strong> Following
-              </Typography>
-              <Typography variant="body2" sx={{ color: "black" }}>
-                <strong>{userProfile.videos.length}</strong> Videos
-              </Typography>
-            </Box>
-            <Button variant="contained" color="primary" sx={{ mt: 2 }}>
-              Edit Profile
-            </Button>
-          </Box>
+          <Image
+            src="/bgProfile.png" // Path to your background image
+            alt="Background"
+            layout="fill"
+            objectFit="cover"
+          />
         </Box>
-
-        <TabContext value={tabValue}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider", mt: 4 }}>
-            <TabList
-              onChange={handleTabChange}
-              aria-label="profile tabs"
-              variant={isMobile ? "scrollable" : "standard"}
-            >
-              <Tab label="Videos" value="videos" />
-              <Tab label="Tags" value="tags" />
-              <Tab label="Groups" value="groups" />
-            </TabList>
-          </Box>
-          <TabPanel value="videos">
-            <Grid container spacing={2}>
-              {userProfile.videos.map((video, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
-                  <Box
-                    sx={{
-                      border: "1px solid #ddd",
-                      borderRadius: 1,
-                      overflow: "hidden",
-                      boxShadow: 1,
-                      width: "100%",
-                      height: "300px", // Fixed height for videos
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      backgroundColor: "black",
-                      cursor: "pointer",
-                    }}
-                    onClick={() =>
-                      handleOpenDialog({
-                        url: video.url,
-                        description: video.description,
-                        template: video.template,
-                      })
-                    }
-                  >
-                    <video width="100%" height="100%">
-                      <source src={video.url} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </TabPanel>
-          <TabPanel value="tags">
-            <Grid container spacing={2}>
-              {userProfile.tags.map((tag, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
-                  <Box
-                    sx={{
-                      border: "1px solid #ddd",
-                      borderRadius: 1,
-                      overflow: "hidden",
-                      boxShadow: 1,
-                      width: "100%",
-                      height: "300px", // Fixed height for tags
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      backgroundColor: "black",
-                      cursor: "pointer",
-                    }}
-                    onClick={() =>
-                      handleOpenDialog({
-                        url: tag.url,
-                        description: tag.description,
-                      })
-                    }
-                  >
-                    <video width="100%" height="100%">
-                      <source src={tag.url} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </TabPanel>
-          <TabPanel value="groups">
-            <Grid container spacing={2}>
-              {userProfile.joinedClasses.map((joinedClass) => (
-                <Grid item xs={12} sm={6} md={4} key={joinedClass.id}>
-                  <Box
-                    sx={{
-                      border: "1px solid #ddd",
-                      borderRadius: 1,
-                      overflow: "hidden",
-                      boxShadow: 1,
-                      width: "100%",
-                      height: "300px", // Fixed height for class images
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                    }}
-                    onClick={() =>
-                      handleOpenDialog({
-                        url: joinedClass.imageUrl,
-                        description: joinedClass.title,
-                      })
-                    }
-                  >
-                    <Box
-                      sx={{
-                        width: "100%",
-                        height: "200px",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <Image
-                        src={joinedClass.imageUrl}
-                        alt={joinedClass.title}
-                        width={300}
-                        height={200}
-                        layout="responsive"
-                        style={{ borderRadius: "0", objectFit: "cover" }}
-                      />
-                    </Box>
-                    <Box sx={{ p: 2, textAlign: "center" }}>
-                      <Typography variant="h6" sx={{ color: "black" }}>
-                        {joinedClass.title}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: "black" }}>
-                        Date: {joinedClass.date}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </TabPanel>
-        </TabContext>
-      </Container>
-
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        maxWidth={"md"}
-        fullWidth
-        fullScreen={isMobile}
-      >
-        <DialogContent>
-          <Button
-            variant="text"
-            onClick={handleCloseDialog}
-            sx={{ position: "absolute", left: 4, top: 4, color: "black" }}
-          >
-            <BackIcon />
-          </Button>
-          {dialogContent && (
+        <Grid container spacing={6}>
+          <Grid item xs={5}>
             <Box
               sx={{
-                position: "relative",
-                width: "100%",
-                mt: 4,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                position: "relative",
+                zIndex: 1,
               }}
             >
-              <Box
+              <Avatar
                 sx={{
-                  position: "relative",
-                  width: "100%",
-                  height: 0,
-                  paddingBottom: "56.25%", // Maintain 16:9 aspect ratio
-                  "&:hover .overlay-icon, &:hover .right-bottom-icons, &:hover .extra-icons":
-                    {
-                      opacity: 1,
-                    },
+                  width: 120,
+                  height: 120,
+                  mt: 6,
+                  border: "2px solid white", // Border around the avatar for better visibility
                 }}
               >
-                <video
-                  ref={videoRef}
-                  src={dialogContent.url}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                  }}
-                  autoPlay
-                  loop
-                  muted
+                <Image
+                  src={user?.imageUrl || userProfile.photo}
+                  alt={
+                    user?.fullName ||
+                    `${user?.firstName} ${user?.lastName}` ||
+                    userProfile.name
+                  }
+                  width={120}
+                  height={120}
+                  style={{ borderRadius: "50%" }}
                 />
-                {videoOverlap && overlapUrl && (
-                  <animated.div
-                    style={{
-                      ...style,
-                      opacity: opacity / 100,
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                    }}
-                  >
-                    <video
-                      ref={overlapVideoRef}
-                      src={overlapUrl}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                      }}
-                      autoPlay
-                      loop
-                      muted
-                    />
-                  </animated.div>
-                )}
-                {dialogContent.template && (
-                  <Box
-                    className="right-bottom-icons"
-                    sx={{
-                      position: "absolute",
-                      bottom: 16,
-                      right: 16,
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 1,
-                      opacity: 0,
-                      transition: "opacity 0.3s",
-                      justifyContent: "flex-start",
-                      width: "auto",
-                    }}
-                  >
-                    {videoOverlap && !isMobile && (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          gap: 2,
-                          mt: 2,
-                        }}
-                      >
-                        <IconButton onClick={() => setShowOpacitySlider(true)}>
-                          <OpacityIcon />
-                        </IconButton>
-                        {showOpacitySlider && (
-                          <Slider
-                            aria-label="Opacity"
-                            value={opacity}
-                            onChange={handleOpacityChange}
-                            sx={{ width: 200, color: "#fff" }}
-                            onChangeCommitted={() =>
-                              setShowOpacitySlider(false)
-                            }
-                          />
-                        )}
-                        <IconButton onClick={handleMirror}>
-                          <FlipIcon />
-                        </IconButton>
-                        <IconButton onClick={() => setShowTimeSlider(true)}>
-                          <TimerIcon />
-                        </IconButton>
-                        {showTimeSlider && (
-                          <Slider
-                            aria-label="Time"
-                            value={overlapTime}
-                            onChange={handleOverlapTimeChange}
-                            sx={{ width: 200, color: "#fff" }}
-                            max={overlapVideoRef.current?.duration || 100}
-                            onChangeCommitted={() => setShowTimeSlider(false)}
-                          />
-                        )}
-                      </Box>
-                    )}
-                    <Button
-                      variant="contained"
-                      sx={{
-                        backgroundColor: "transparent",
-                        padding: 0,
-                        width: 48,
-                        margin: 0,
-                        "&:hover": {
-                          backgroundColor: "rgba(0, 0, 0, 0.7)",
-                        },
-                      }}
-                      onClick={() =>
-                        handleVideoOverlap(dialogContent.template || "")
-                      }
-                    >
-                      <SwitchVideoIcon />
-                    </Button>
-                  </Box>
-                )}
-                <IconButton
-                  className="overlay-icon"
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    zIndex: 2,
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    "&:hover": {
-                      backgroundColor: "rgba(0, 0, 0, 0.7)",
-                    },
-                    opacity: 0,
-                    transition: "opacity 0.3s",
-                  }}
-                  onClick={togglePlayPause}
-                >
-                  {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-                </IconButton>
-              </Box>
-              <Box sx={{ mt: 2 }}>
-                {videoOverlap && isMobile && (
-                  <>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "flex-start",
-                        gap: 2,
-                        mt: 2,
-                      }}
-                    >
-                      <IconButton onClick={() => setShowOpacitySlider(true)}>
-                        <OpacityIcon />
-                      </IconButton>
-                      <IconButton onClick={handleMirror}>
-                        <FlipIcon />
-                      </IconButton>
-                      <IconButton onClick={() => setShowTimeSlider(true)}>
-                        <TimerIcon />
-                      </IconButton>
-                    </Box>
-                    {showOpacitySlider && (
-                      <Slider
-                        aria-label="Opacity"
-                        value={opacity}
-                        onChange={handleOpacityChange}
-                        sx={{ width: 200, color: "#fff" }}
-                        onChangeCommitted={() => setShowOpacitySlider(false)}
-                      />
-                    )}
-                    {showTimeSlider && (
-                      <Slider
-                        aria-label="Time"
-                        value={overlapTime}
-                        onChange={handleOverlapTimeChange}
-                        sx={{ width: 200, color: "#fff" }}
-                        max={overlapVideoRef.current?.duration || 100}
-                        onChangeCommitted={() => setShowTimeSlider(false)}
-                      />
-                    )}
-                  </>
-                )}
-                <Typography variant="h6">Comments</Typography>
-                <List>
-                  {comments.map((comment, index) => (
-                    <ListItem key={index}>
-                      <ListItemAvatar>
-                        <Avatar>
-                          <Image
-                            src={user?.imageUrl || userProfile.photo}
-                            alt={userProfile.name}
-                            width={40}
-                            height={40}
-                            style={{ borderRadius: "50%" }}
-                          />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText primary={comment} />
-                    </ListItem>
-                  ))}
-                </List>
-                <TextField
-                  id="comment"
-                  label="Add a comment"
-                  variant="outlined"
-                  fullWidth
-                  sx={{ mt: 2 }}
-                />
+              </Avatar>
+              <Typography
+                variant={"h6"}
+                component="h1"
+                sx={{ mt: 2 }}
+                gutterBottom
+              >
+                {user?.fullName ||
+                  `${user?.firstName} ${user?.lastName}` ||
+                  userProfile.name}
+              </Typography>
+              <Typography variant="subtitle2" component="div" gutterBottom>
+                {userProfile.handle}
+              </Typography>
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
                 <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleAddComment}
-                  sx={{ mt: 1 }}
+                  variant={"outlined"}
+                  sx={{ color: "white", padding: 0, borderColor: "white" }}
+                  onClick={() => setView("videos")}
                 >
-                  Submit
+                  課程
+                </Button>
+                <Button
+                  variant={"outlined"}
+                  sx={{ color: "white", padding: 0, borderColor: "white" }}
+                  onClick={() => setView("groups")}
+                >
+                  團體
                 </Button>
               </Box>
             </Box>
-          )}
-        </DialogContent>
-      </Dialog>
+          </Grid>
+          <Grid item xs={7}>
+            <Box sx={{ textAlign: "left", textAlignLast: "left" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 2,
+                  mt: 24,
+                  justifyContent: "flex-start",
+                }}
+              >
+                <Typography variant="body2">
+                  <strong>{userProfile.followers}</strong> Followers
+                </Typography>
+                <Typography variant="body2">
+                  <strong>{userProfile.following}</strong> Following
+                </Typography>
+                <Typography variant="body2">
+                  <strong>{userProfile.videos.length}</strong> Videos
+                </Typography>
+              </Box>
+              <Typography variant="body1" sx={{ mt: 2 }} paragraph>
+                {userProfile.description}
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+
+        {view === "videos" && (
+          <Grid container sx={{ mt: 4 }}>
+            <VideoSquare />
+          </Grid>
+        )}
+
+        {view === "groups" && (
+          <ImageList variant="masonry" cols={1} gap={10} sx={{ mt: 2 }}>
+            {itemData.map((item) => (
+              <Link key={item.title} href={`/groups/${item.eventId}`}>
+                <ImageListItem>
+                  <div className="group rounded-3xl overflow-hidden relative">
+                    <div
+                      style={{ width: 300, height: 160, position: "relative" }}
+                    >
+                      <Image
+                        width={300}
+                        height={160}
+                        src={item.img}
+                        alt={item.title}
+                        loading="lazy"
+                        className="rounded-3xl p-0"
+                      />
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          bottom: 0,
+                          left: 0,
+                          width: "100%",
+                          backgroundColor: "rgba(0, 0, 0, 0.5)",
+                          color: "white",
+                          padding: "8px",
+                        }}
+                      >
+                        <Typography variant="subtitle1">
+                          {item.group} - {item.song}
+                        </Typography>
+                      </Box>
+                    </div>
+                  </div>
+                  <ImageListItemBar
+                    title={`${item.title} x ${item.author}`}
+                    position="below"
+                    sx={{
+                      marginLeft: 2,
+                      color: "gray",
+                    }}
+                    actionIcon={
+                      <>
+                        <Chip
+                          label={item.stage}
+                          sx={
+                            item.stage === "Beginner"
+                              ? {
+                                  backgroundColor: "#5AA2D6",
+                                  color: "white",
+                                }
+                              : item.stage === "Intermediate"
+                                ? {
+                                    backgroundColor: "#CB5AD6",
+                                    color: "white",
+                                  }
+                                : {
+                                    backgroundColor: "#CB8736",
+                                    color: "white",
+                                  }
+                          }
+                          size="small" // Optional: Adjust size based on your preferences
+                          className="mr-2 mt-2"
+                        />
+                        <Chip
+                          icon={<PersonIcon />} // Add the icon here
+                          label={`${item.people}`}
+                          sx={{ backgroundColor: "gray", color: "white" }}
+                          size="small"
+                          className="mr-2 mt-2"
+                        />
+                      </>
+                    }
+                  />
+                </ImageListItem>
+              </Link>
+            ))}
+          </ImageList>
+        )}
+      </Container>
     </Box>
   );
 };
