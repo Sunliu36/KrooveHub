@@ -19,6 +19,7 @@ import {
   Popover,
   Typography,
   Button,
+  Container,
 } from "@mui/material";
 import { useSpring, animated } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
@@ -39,7 +40,7 @@ const VideoPlayer: React.FC = () => {
   const [currentTime2, setCurrentTime2] = useState<number>(0);
   const [duration1, setDuration1] = useState<number>(100); // Default max duration for slider
   const [duration2, setDuration2] = useState<number>(100); // Default max duration for slider
-  const [showUpload, setShowUpload] = useState(true);
+  const [videoType, setVideoType] = useState<"upDown" | "overlap" | "no">("no");
   const [anchorElOpacity, setAnchorElOpacity] = useState<HTMLElement | null>(
     null,
   );
@@ -126,8 +127,12 @@ const VideoPlayer: React.FC = () => {
     }
   };
 
-  const handleToggle = () => {
-    setShowUpload((prev) => !prev);
+  const handleVideoType = (type: "upDown" | "overlap" | "no") => {
+    setVideoType(type);
+  };
+
+  const handleNoVideo = () => {
+    setVideoType("no");
   };
 
   const handleUploadOverlayVideo = (
@@ -221,19 +226,7 @@ const VideoPlayer: React.FC = () => {
       }}
       ref={containerRef}
     >
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: 3,
-        }}
-      >
-        <IconButton onClick={handleToggle} sx={{ color: "white" }}>
-          <ArrowBackIcon />
-        </IconButton>
-      </Box>
-      {(!currentVideo || !overlayVideo || showUpload) && (
+      {(!currentVideo || !overlayVideo || videoType == "no") && (
         <Box
           sx={{
             display: "flex",
@@ -396,10 +389,10 @@ const VideoPlayer: React.FC = () => {
                   cursor: "not-allowed",
                 },
               }}
-              onClick={handleToggle}
-              disabled={true}
+              onClick={() => handleVideoType("upDown")}
+              disabled={!currentVideo || !overlayVideo}
             >
-              Coming soon
+              上下
             </Button>
             <Button
               variant="contained"
@@ -422,7 +415,7 @@ const VideoPlayer: React.FC = () => {
                   cursor: "not-allowed",
                 },
               }}
-              onClick={handleToggle}
+              onClick={() => handleVideoType("overlap")}
               disabled={!currentVideo || !overlayVideo}
             >
               疊影
@@ -431,21 +424,18 @@ const VideoPlayer: React.FC = () => {
         </Box>
       )}
 
-      <Box
+      <Container
+        maxWidth="sm"
         sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          display: "inline-block",
-          overflow: "hidden",
-          width: "100%",
-          height: "100%",
-          maxWidth: "1600px",
-          maxHeight: "auto",
+          mt: 10,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
         }}
       >
-        {currentVideo && overlayVideo && !showUpload && (
+        {currentVideo && overlayVideo && videoType == "overlap" && (
           <>
             <video
               ref={videoRef}
@@ -494,7 +484,7 @@ const VideoPlayer: React.FC = () => {
               </video>
             </animated.div>
 
-            <Box className="fixed bottom-0 left-0 right-0 bg-black p-2 flex justify-center items-center space-x-2">
+            <Box className="fixed bottom-0 left-0 right-0 bg-black p-2 z-10 flex justify-center items-center space-x-2">
               <IconButton sx={{ color: "white" }} onClick={handlePlayPause}>
                 {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
               </IconButton>
@@ -592,9 +582,166 @@ const VideoPlayer: React.FC = () => {
                 />
               </Box>
             </Popover>
+            <Box
+              sx={{
+                position: "absolute",
+                top: 80,
+                left: 0,
+                zIndex: 3,
+              }}
+            >
+              <IconButton onClick={handleNoVideo} sx={{ color: "white" }}>
+                <ArrowBackIcon />
+              </IconButton>
+            </Box>
           </>
         )}
-        {!isPlaying && (
+        {currentVideo && overlayVideo && videoType === "upDown" && (
+          <>
+            <video
+              ref={videoRef}
+              style={{
+                position: "absolute",
+                top: "80px", // Padding from top
+                left: 0,
+                width: "100%",
+                height: "calc(50% - 80px)", // Adjusted height to include padding
+                objectFit: "contain",
+                zIndex: 0,
+              }}
+              autoPlay
+              muted
+              playsInline
+              webkit-playsinline="true"
+            >
+              <source src={currentVideo} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <video
+              ref={topVideoRef}
+              style={{
+                position: "absolute",
+                top: "calc(50%)", // Adjusted position to include padding
+                left: 0,
+                width: "100%",
+                height: "calc(50% - 80px)", // Adjusted height to include padding
+                objectFit: "contain",
+                zIndex: 0,
+              }}
+              autoPlay
+              muted
+              playsInline
+              webkit-playsinline="true"
+            >
+              <source src={overlayVideo} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+
+            <Box className="fixed bottom-0 left-0 right-0 bg-black p-2 z-10 flex justify-center items-center space-x-2">
+              <IconButton sx={{ color: "white" }} onClick={handlePlayPause}>
+                {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
+              </IconButton>
+              <Select
+                value={playbackRate}
+                onChange={handleSpeedChange}
+                displayEmpty
+                inputProps={{ "aria-label": "Speed" }}
+                sx={{ color: "white" }}
+              >
+                <MenuItem value={0.25}>0.25x</MenuItem>
+                <MenuItem value={0.5}>0.5x</MenuItem>
+                <MenuItem value={0.75}>0.75x</MenuItem>
+                <MenuItem value={1}>1x</MenuItem>
+                <MenuItem value={1.2}>1.2x</MenuItem>
+              </Select>
+              <IconButton
+                sx={{ color: "white" }}
+                onClick={handlePopoverOpenTime}
+              >
+                <AccessTimeIcon />
+              </IconButton>
+            </Box>
+            <Popover
+              open={openOpacity}
+              anchorEl={anchorElOpacity}
+              onClose={handlePopoverCloseOpacity}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+            >
+              <Box p={2}>
+                <Typography variant="h6" gutterBottom>
+                  Opacity
+                </Typography>
+                <Slider
+                  value={opacity}
+                  onChange={handleOpacityChange}
+                  aria-labelledby="opacity-slider"
+                  min={0}
+                  max={100}
+                  sx={{ width: 150, color: "gray" }}
+                />
+              </Box>
+            </Popover>
+            <Popover
+              open={openTime}
+              anchorEl={anchorElTime}
+              onClose={handlePopoverCloseTime}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+            >
+              <Box p={2}>
+                <Typography variant="h6" gutterBottom>
+                  Template
+                </Typography>
+                <Slider
+                  value={currentTime1}
+                  onChange={handleTimeChange1}
+                  aria-labelledby="time-slider1"
+                  min={0}
+                  max={duration1}
+                  sx={{ width: 150, color: "gray" }}
+                />
+                <Typography variant="h6" gutterBottom>
+                  Own Video
+                </Typography>
+                <Slider
+                  value={currentTime2}
+                  onChange={handleTimeChange2}
+                  aria-labelledby="time-slider2"
+                  min={0}
+                  max={duration2}
+                  sx={{ width: 150, color: "gray" }}
+                />
+              </Box>
+            </Popover>
+            <Box
+              sx={{
+                position: "absolute",
+                top: 80,
+                left: 0,
+                zIndex: 3,
+              }}
+            >
+              <IconButton onClick={handleNoVideo} sx={{ color: "white" }}>
+                <ArrowBackIcon />
+              </IconButton>
+            </Box>
+          </>
+        )}
+
+        {!isPlaying && videoType == "overlap" && (
           <IconButton
             color="primary"
             onClick={handlePlayPause}
@@ -613,7 +760,7 @@ const VideoPlayer: React.FC = () => {
             <PlayArrowIcon />
           </IconButton>
         )}
-      </Box>
+      </Container>
     </Box>
   );
 };
