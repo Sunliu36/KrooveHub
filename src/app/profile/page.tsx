@@ -152,7 +152,7 @@ const Profile: React.FC = () => {
           }}
         >
           <Image
-            src="/bgProfile.png" // Path to your background image
+            src="/kpop1.png" // Path to your background image
             alt="Background"
             layout="fill"
             objectFit="cover"

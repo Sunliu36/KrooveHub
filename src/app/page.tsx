@@ -20,7 +20,7 @@ export default function Home() {
             <h1 className="text-7xl font-bold align-middle mb-60 text-white">
               KROOVE
               <br />
-              Hub
+              HUB
             </h1>
           </div>
         </div>

@@ -51,7 +51,7 @@ const defaultItemData = [
     eventId: "event3",
   },
   {
-    img: "/kpop3.png",
+    img: "/kpop4.png",
     title: "Kpoo",
     url: "/sample-video4.mp4",
     group: "Blackpink",
@@ -65,7 +65,7 @@ const defaultItemData = [
     eventId: "event4",
   },
   {
-    img: "/kpop1.png",
+    img: "/kpop5.png",
     title: "Kpoppp",
     url: "/sample-video5.mp4",
     group: "Twice",
@@ -79,7 +79,7 @@ const defaultItemData = [
     eventId: "event1",
   },
   {
-    img: "/kpop2.png",
+    img: "/kpop1.png",
     title: "Danclub",
     url: "/sample-video3.mp4",
     group: "Blackpink",
@@ -93,7 +93,7 @@ const defaultItemData = [
     eventId: "event2",
   },
   {
-    img: "/kpop3.png",
+    img: "/kpop2.png",
     title: "CoDance",
     url: "/sample-video2.mp4",
     group: "Blackpink",
