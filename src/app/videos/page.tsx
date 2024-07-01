@@ -22,18 +22,18 @@ interface ClassType {
 }
 
 const teacherData = [
-  { teacher: "哈妹", image: "/avatar1.png" },
-  { teacher: "彩樂", image: "/avatar2.png" },
-  { teacher: "花花", image: "/avatar3.png" },
-  { teacher: "Aj", image: "/avatar4.png" },
-  { teacher: "哈妹", image: "/avatar1.png" },
-  { teacher: "彩樂", image: "/avatar2.png" },
-  { teacher: "花花", image: "/avatar3.png" },
-  { teacher: "Aj", image: "/avatar4.png" },
-  { teacher: "哈妹", image: "/avatar1.png" },
-  { teacher: "彩樂", image: "/avatar2.png" },
-  { teacher: "花花", image: "/avatar3.png" },
-  { teacher: "Aj", image: "/avatar4.png" },
+  { teacher: "New Jeans", image: "/group1.png" },
+  { teacher: "Aespa", image: "/group2.png" },
+  { teacher: "Blackpink", image: "/group3.png" },
+  { teacher: "BigBang", image: "/group4.png" },
+  { teacher: "New Jeans", image: "/group1.png" },
+  { teacher: "Aespa", image: "/group2.png" },
+  { teacher: "Blackpink", image: "/group3.png" },
+  { teacher: "BigBang", image: "/group4.png" },
+  { teacher: "New Jeans", image: "/group1.png" },
+  { teacher: "Aespa", image: "/group2.png" },
+  { teacher: "Blackpink", image: "/group3.png" },
+  { teacher: "BigBang", image: "/group4.png" },
 ];
 
 const ImagesList: React.FC = () => {

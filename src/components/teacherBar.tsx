@@ -17,7 +17,7 @@ const Teacher: React.FC<TeacherProps> = ({ data }) => {
       <div className="w-80 h-40 rounded-md overflow-hidden relative">
         <div className="w-full flex items-start">
           <Typography variant="h6" className="mb-2">
-            你喜歡的老師...
+            你喜歡的團隊...
           </Typography>
         </div>
         <div className="overflow-x-auto w-full">
