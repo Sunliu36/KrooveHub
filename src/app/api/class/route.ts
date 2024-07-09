@@ -9,7 +9,7 @@ import { usersTable } from "@/db/schema";
 
 const defaultItemData = [
   {
-    img: "\Magnet2.png",
+    img: "Magnet2.png",
     title: "「Magnet」",
     url: "/Magnet.mp4",
     group: "ILLIT",

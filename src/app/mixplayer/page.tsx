@@ -449,7 +449,6 @@ const VideoPlayer: React.FC = () => {
                 zIndex: 0,
               }}
               autoPlay
-              
               webkit-playsinline="true"
               playsInline
             >
@@ -610,7 +609,6 @@ const VideoPlayer: React.FC = () => {
                 zIndex: 0,
               }}
               autoPlay
-              
               playsInline
               webkit-playsinline="true"
             >

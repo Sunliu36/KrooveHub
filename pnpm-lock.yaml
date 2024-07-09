@@ -8,8 +8,8 @@ importers:
   .:
     dependencies:
       "@clerk/nextjs":
-        specifier: ^5.0.7
-        version: 5.0.7(next@14.2.2(@babel/core@7.24.4)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^5.2.2
+        version: 5.2.2(next@14.2.2(@babel/core@7.24.4)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       "@ducanh2912/next-pwa":
         specifier: ^10.2.6
         version: 10.2.6(esbuild@0.19.12)(next@14.2.2(@babel/core@7.24.4)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(webpack@5.91.0(esbuild@0.19.12))
@@ -129,8 +129,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(prettier@3.2.5)
       tailwindcss:
-        specifier: ^3.4.1
-        version: 3.4.3
+        specifier: ^3.4.4
+        version: 3.4.4
       typescript:
         specifier: ^5
         version: 5.4.5
@@ -1087,53 +1087,53 @@ packages:
       }
     engines: { node: ">=6.9.0" }
 
-  "@clerk/backend@1.1.2":
+  "@clerk/backend@1.3.0":
     resolution:
       {
-        integrity: sha512-WWq7sRQ6UVQgpOrX4AgT4MsxLWFY+UqQ308yl3SYuLKHJhltXJ2p/NBu31V7tzb45QCejMbqlk91dXgA8QvI5A==,
+        integrity: sha512-WBVQqUgjo8itXQmB9j4vS+6EU4fsEskF1Bof4QMlXiyLazkhkqrlk1HVyDm0iQ3n4PJDkL4wN3IfJo2sBcauFQ==,
       }
     engines: { node: ">=18.17.0" }
 
-  "@clerk/clerk-react@5.0.4":
+  "@clerk/clerk-react@5.2.7":
     resolution:
       {
-        integrity: sha512-sVpzLgz/2Muj7W2M3j1g4l296ld+XlEKIQ32sUhFeIM4XiOpBaO8bFu1c4YcdKaetreI6f6dB/K9lYJLGZTtFw==,
+        integrity: sha512-8gPS/N0D1ooGg92lrSsAN9nKZEVE1b/nfZGtgEZX9epQ47nD+geThAC1G+mc3hABNkIODvIyecKTLbsk0K+LfA==,
       }
     engines: { node: ">=18.17.0" }
     peerDependencies:
-      react: ">=18"
-      react-dom: ">=18"
+      react: ">=18 || >=19.0.0-beta"
+      react-dom: ">=18 || >=19.0.0-beta"
 
-  "@clerk/nextjs@5.0.7":
+  "@clerk/nextjs@5.2.2":
     resolution:
       {
-        integrity: sha512-HMUERoU52EnEVpG9IaFcRaEOXme8rzv40POkczt8MNHLJ7bQjf3oyc2L+o++w7lmusGNABbfTs1Aq6F2d9b2Gw==,
+        integrity: sha512-YX0OTwMEoYbAF4rquio5fm8TIp0zELSede8ul83x0uNkYx5pQE+YAqZYh0UbsP+Y0w777FgRsLIXz5zPGV1hQw==,
       }
     engines: { node: ">=18.17.0" }
     peerDependencies:
-      next: ^13.5.4 || ^14.0.3
-      react: ">=18"
-      react-dom: ">=18"
+      next: ^13.5.4 || ^14.0.3 || >=15.0.0-rc
+      react: ">=18 || >=19.0.0-beta"
+      react-dom: ">=18 || >=19.0.0-beta"
 
-  "@clerk/shared@2.0.2":
+  "@clerk/shared@2.3.2":
     resolution:
       {
-        integrity: sha512-uQXbBJyUV6B4y/cKIgKypVmCdCh7pHeQYbASCKI3RzlsC3FPyopy0hTlAIvXJqjulPYBfRUI1w2FDRJzpEk3sw==,
+        integrity: sha512-uOTYqSmxe41Ye8TnyPtthwLp5rrYK5Ze04bvl1SQzlIibr4qeLU2DXZOYibMnSWvIMwr45pXUHsJh8NfKKIZ2w==,
       }
     engines: { node: ">=18.17.0" }
     peerDependencies:
-      react: ">=18"
-      react-dom: ">=18"
+      react: ">=18 || >=19.0.0-beta"
+      react-dom: ">=18 || >=19.0.0-beta"
     peerDependenciesMeta:
       react:
         optional: true
       react-dom:
         optional: true
 
-  "@clerk/types@4.2.1":
+  "@clerk/types@4.7.0":
     resolution:
       {
-        integrity: sha512-tR7Qd1P5Fa4n81ZxKA0tFPJd1OgrL7chU/+moq/LSnK8ZRN/DUzh5K7730sdw5F26CKtT6pzmW+irtgpYLYdDQ==,
+        integrity: sha512-Gg4zEZLE7wgByMhgHMU69tkIEwfiFKNSbtRwdtAwrW+Pg0blpVpw7XuN0wHNAYFM2COrrKEUaGt8KWZmmdTFbg==,
       }
     engines: { node: ">=18.17.0" }
 
@@ -4605,12 +4605,12 @@ packages:
         integrity: sha512-jc7BFxgKPKi94uOvEmzlSWFFe2+vASyXaKUpdQKatWAESU2MWjDfFf0fdfc83CDKcA5QecabZeNLyfhe3yKNkg==,
       }
 
-  js-cookie@3.0.1:
+  js-cookie@3.0.5:
     resolution:
       {
-        integrity: sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw==,
+        integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==,
       }
-    engines: { node: ">=12" }
+    engines: { node: ">=14" }
 
   js-tokens@4.0.0:
     resolution:
@@ -5344,10 +5344,10 @@ packages:
       }
     engines: { node: ">=16 || 14 >=14.17" }
 
-  path-to-regexp@6.2.1:
+  path-to-regexp@6.2.2:
     resolution:
       {
-        integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==,
+        integrity: sha512-GQX3SSMokngb36+whdpRXE+3f9V8UzyAorlYvOGx87ufGHehNTn5lCxrKtLyZ4Yl/wEKnNnr98ZzOwwDZV5ogw==,
       }
 
   path-type@4.0.0:
@@ -6390,10 +6390,10 @@ packages:
     peerDependencies:
       react: ^16.11.0 || ^17.0.0 || ^18.0.0
 
-  tailwindcss@3.4.3:
+  tailwindcss@3.4.4:
     resolution:
       {
-        integrity: sha512-U7sxQk/n397Bmx4JHbJx/iSOOv5G+II3f1kpLpY2QeUv5DcPdcTsYLlusZfq1NthHS1c1cZoyFmmkex1rzke0A==,
+        integrity: sha512-ZoyXOdJjISB7/BcLTR6SEsLgKtDStYyYZVLsUtWChO4Ps20CBad7lfJKVDiejocV4ME1hLmyY0WJE3hSDcmQ2A==,
       }
     engines: { node: ">=14.0.0" }
     hasBin: true
@@ -7735,9 +7735,10 @@ snapshots:
       "@babel/helper-validator-identifier": 7.22.20
       to-fast-properties: 2.0.0
 
-  "@clerk/backend@1.1.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)":
+  "@clerk/backend@1.3.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)":
     dependencies:
-      "@clerk/shared": 2.0.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      "@clerk/shared": 2.3.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      "@clerk/types": 4.7.0
       cookie: 0.5.0
       snakecase-keys: 5.4.4
       tslib: 2.4.1
@@ -7745,37 +7746,39 @@ snapshots:
       - react
       - react-dom
 
-  "@clerk/clerk-react@5.0.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)":
+  "@clerk/clerk-react@5.2.7(react-dom@18.2.0(react@18.2.0))(react@18.2.0)":
     dependencies:
-      "@clerk/shared": 2.0.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      "@clerk/types": 4.2.1
+      "@clerk/shared": 2.3.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      "@clerk/types": 4.7.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       tslib: 2.4.1
 
-  "@clerk/nextjs@5.0.7(next@14.2.2(@babel/core@7.24.4)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)":
+  "@clerk/nextjs@5.2.2(next@14.2.2(@babel/core@7.24.4)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)":
     dependencies:
-      "@clerk/backend": 1.1.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      "@clerk/clerk-react": 5.0.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      "@clerk/shared": 2.0.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      "@clerk/backend": 1.3.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      "@clerk/clerk-react": 5.2.7(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      "@clerk/shared": 2.3.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      "@clerk/types": 4.7.0
       crypto-js: 4.2.0
       next: 14.2.2(@babel/core@7.24.4)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      path-to-regexp: 6.2.1
+      path-to-regexp: 6.2.2
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       tslib: 2.4.1
 
-  "@clerk/shared@2.0.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)":
+  "@clerk/shared@2.3.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)":
     dependencies:
+      "@clerk/types": 4.7.0
       glob-to-regexp: 0.4.1
-      js-cookie: 3.0.1
+      js-cookie: 3.0.5
       std-env: 3.7.0
       swr: 2.2.0(react@18.2.0)
     optionalDependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  "@clerk/types@4.2.1":
+  "@clerk/types@4.7.0":
     dependencies:
       csstype: 3.1.1
 
@@ -9967,7 +9970,7 @@ snapshots:
 
   jose@4.15.5: {}
 
-  js-cookie@3.0.1: {}
+  js-cookie@3.0.5: {}
 
   js-tokens@4.0.0: {}
 
@@ -10376,7 +10379,7 @@ snapshots:
       lru-cache: 10.2.0
       minipass: 7.0.4
 
-  path-to-regexp@6.2.1: {}
+  path-to-regexp@6.2.2: {}
 
   path-type@4.0.0: {}
 
@@ -10948,7 +10951,7 @@ snapshots:
       react: 18.2.0
       use-sync-external-store: 1.2.2(react@18.2.0)
 
-  tailwindcss@3.4.3:
+  tailwindcss@3.4.4:
     dependencies:
       "@alloc/quick-lru": 5.2.0
       arg: 5.0.2

@@ -11,8 +11,7 @@ const defaultItemData = [
   {
     img: "/Magnet2.png",
     title: "Kpop Dance Workshop",
-    description:
-      "Find the professional team, kroove together!",
+    description: "Find the professional team, kroove together!",
     group: "ILLIT",
     song: "「Magnet」",
     author: "@kristastucchio",
@@ -31,8 +30,7 @@ const defaultItemData = [
   {
     img: "/kpop1.png",
     title: "「How Sweet」",
-    description:
-      "Find the professional team, kroove together!",
+    description: "Find the professional team, kroove together!",
     group: "NewJeans",
     song: "「How Sweet」",
     author: "@rollelflex",
