@@ -47,7 +47,7 @@ const userProfile: UserProfile = {
   handle: "@UnknownDancer",
   name: "UnKnown Dancer",
   description: "Professional dancer and choreographer",
-  photo: "/profile-photo.jpg", // Make sure to place a photo at this path or update with the correct path
+  photo: "/EpochSchool.jpg", // Make sure to place a photo at this path or update with the correct path
   videos: [
     {
       url: "/sample-video3.mp4",
@@ -152,7 +152,7 @@ const Profile: React.FC = () => {
           }}
         >
           <Image
-            src="/kpop1.png" // Path to your background image
+            src="/EpochSchool.png" // Path to your background image
             alt="Background"
             layout="fill"
             objectFit="cover"

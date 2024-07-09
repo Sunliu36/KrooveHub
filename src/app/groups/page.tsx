@@ -151,7 +151,7 @@ export default function ImagesList() {
                   </div>
                 </div>
                 <ImageListItemBar
-                  title={`${item.title} x ${item.author}`}
+                  title={``}
                   position="below"
                   sx={{
                     marginLeft: 2,
